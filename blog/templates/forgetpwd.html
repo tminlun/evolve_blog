@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- 告诉IE浏览器，给我使用最新内核 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 响应式:根据不同的屏幕，自动响应布局 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block extends_title %}忘记密码{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+{% block content %}
+    <div class="wrap">
+    <div class="wrapper">
+        <div class="main">
+            <div class="containter">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">登录</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="{% url 'forget_pwd' %}" method="POST">
+                                {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% if froms %}{{ froms }}{% else %}/{% endif %}">
+                                    <label for="id_username">邮箱</label>
+                                    <input type="text" name="email" class="form-control" placeholder="请输入用户名或邮箱" required id="id_username" />
+                                    <p class="text-danger"></p>
+                                    <label for="id_password">验证码</label>
+
+                                    {{forgetpwd_form.captcha}}
+                                    <p class="text-danger"></p>
+                                    <span class="pull-left text-danger">{% if msg %}{{ msg }}{% endif %}{% for i,error in forget_code.errors.items %}{{ error }}{% endfor %}</span>
+                                <input type="submit" value="发送邮件" class="btn btn-primary pull-right">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+<script type="text/javascript">
+//刷新验证码图片
+$(function(){
+    $("img.captcha").click(function(){   //更新验证码图片ajax
+        $.getJSON("/captcha/refresh",function(data){
+            $("img.captcha").attr("src",data.image_url);
+            $("#id_captcha_0").attr("value",data.key);
+        });
+    });
+});
+
+
+</script>
+
+</body>
+</html>

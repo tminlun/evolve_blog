@@ -1,0 +1,125 @@
+{% load staticfiles %}
+
+
+{% block head_extends %}
+
+    <meta charset="UTF-8">
+    <meta name="keywords" content="" />
+	<meta name="description" content="" />
+
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/iconic/css/material-design-iconic-font.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="limiter">
+		<div class="container-login100" style="background-image: url({% static 'images/bg-01.jpg' %});">
+			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+                <p><a href="{% url 'home' %}">返回首页</a></p>
+                    {# 注册 #}
+                    <form action="{% url 'signup' %}" method="post">
+                        {% csrf_token %}
+                        <div id="re" style="display: block;">
+                        <span class="login100-form-title p-b-49">注册</span>
+
+                        <div class="wrap-input100 validate-input m-b-23" data-validate="请输入用户名">
+                            <span class="label-input100">用户名</span>
+                            <input class="input100" required type="text" name="username" value="{{ register_form.username.value }}" placeholder="请输入用户名" autocomplete="off">
+                            <span class="focus-input100" data-symbol="&#xf206;"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-b-23" data-validate="请输入邮箱">
+                            <span class="label-input100">邮箱</span>
+                            <input class="input100" required type="email" name="email" value="{{ register_form.email.value }}" placeholder="请输入邮箱" autocomplete="off">
+                            <span class="focus-input100" data-symbol="&#xf206;"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="请输入密码">
+                            <span class="label-input100">密码</span>
+                            <input class="input100" required type="password" value="{{ register_form.password.value }}" name="password" placeholder="请输入密码">
+                            <span class="focus-input100" data-symbol="&#xf190;"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="请再次确认密码">
+                            <span class="label-input100">确认密码</span>
+                            <input class="input100" required type="password" value="{{ register_form.password_again.value }}" name="password_again" placeholder="请再次确认密码">
+                            <span class="focus-input100" data-symbol="&#xf190;"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="验证码">
+                            <span class="label-input100">验证码</span>
+                            {{ register_form.captcha }}
+
+                            <span class="focus-input100" data-symbol="&#xf190;" style="margin-top: 1.2em;"></span>
+                        </div>
+
+
+                            <br>
+                        <span class="pull-left text-danger error">
+                            {% for k,error in register_form.errors.items %}
+                                {{ error }}
+                            {% endfor %}
+                            {{ msg }}
+                        </span>
+
+                        <div class="text-right p-t-8 p-b-31">
+                            <a href="javascript:"></a>
+                        </div>
+
+                        <div class="container-login100-form-btn">
+                            <div class="wrap-login100-form-btn">
+                                <div class="login100-form-bgbtn"></div>
+                                <button type="submit" class="login100-form-btn">注 册</button>
+                            </div>
+                        </div>
+
+                        <div class="txt1 text-center p-t-54 p-b-20">
+                            <span>第三方登录</span>
+                        </div>
+
+                        <div class="flex-c-m">
+                            <a href="#" class="login100-social-item bg1">
+                                <i class="fa fa-wechat"></i>
+                            </a>
+
+                            <a href="#" class="login100-social-item bg2">
+                                <i class="fa fa-qq"></i>
+                            </a>
+
+                            <a href="#" class="login100-social-item bg3">
+                                <i class="fa fa-weibo"></i>
+                            </a>
+                        </div>
+
+                        <div class="flex-col-c p-t-25">
+                            <a href="{% url 'login' %}" class="txt2">已有账号？登录</a>
+                        </div>
+                    </div>
+                    </form>
+
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+    {# 登录|注册 #}
+    <script type="text/javascript">
+        //验证码刷新
+         $(function(){
+            $("img.captcha").click(function(){   //更新验证码图片ajax
+                $.getJSON("/captcha/refresh",function(data){
+                    $("img.captcha").attr("src",data.image_url);
+                    $("#id_captcha_0").attr("value",data.key);
+                });
+            });
+        });
+
+    </script>
+{% endblock %}

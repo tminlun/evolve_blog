@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<title>
+    {% block title_extends %}首页_田敏伦个人博客 - 一个站在web后端设计之路个人博客网站{% endblock %}
+</title>
+{% block head_extends %}
+
+            <!-- 告诉IE浏览器，给我使用最新内核 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 响应式:根据不同的屏幕，自动响应布局 -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="utf-8">
+
+    <link href="{% static 'css/about.css' %}" rel="stylesheet">
+    <script src="{% static 'js/ab.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/music.css' %}">
+    <meta name="keywords" content="个人博客,田敏伦个人博客,个人博客模板,田敏伦" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'css/m.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery.min.js' %}" ></script>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+
+
+    <!--[if lt IE 9]>
+    <script src="js/modernizr.js"></script>
+    <![endif]-->
+
+        <script src="../../../static/js/jquery.min.js" ></script>
+    <script src="../../../static/js/scrollReveal.js"></script>
+    <script src="../../../static/js/time.js" ></script>
+
+{% endblock %}
+{% block context %}
+
+    <div class="jumbotron">
+	  <div class="container">
+	    <h1>Tml Blog</h1>
+	    <p>只为原创，发表个人原创的技术博客</p>
+	    <p>田敏伦的博客</p>
+	  </div>
+	</div>
+<article>
+  <div class="photowall">
+    <ul class="wall_a">
+      <li><img src="../static/images/1.jpg">
+        <figcaption>
+          <h2>个人博客，属于我的世界</h2>
+        </figcaption>
+        </li>
+      <li>
+        <p class="text_b">愿每次回忆，对生活都不感到负疚</p>
+      </li>
+      <li><img src="../static/images/xibakeimg.jpg">
+        <figcaption>
+          <h2>不再因为别人过得好而焦虑，在没有人看得到你的时候依旧能保持节奏 </h2>
+        </figcaption>
+        </li>
+      <li>
+        <p class="text_b">最甜美的是爱情，最苦涩的也是爱情。</p>
+      </li>
+      <li>
+        <p class="text_b">对一个尚未成熟的少年来讲，坏的伙伴比好的老师起的作用要大得多。</p>
+      </li>
+      <li><img src="../static/images/3.jpg">
+        <figcaption>
+          <h2>不再因为别人过得好而焦虑，在没有人看得到你的时候依旧能保持节奏 </h2>
+        </figcaption>
+        </li>
+      <li>
+        <p class="text_b">在茫茫沙漠，唯有前进才是希望的象征!</p>
+      </li>
+      <li><img src="../static/images/6.jpg">
+        <figcaption>
+          <h2>我能行，加油！ </h2>
+        </figcaption>
+        </li>
+
+    </ul>
+  </div>
+  <div class="abox">
+  <h2>博主简介</h2>
+  <div class="biji-content" id="content"> 田敏伦，男，一个90后草根男站长！17年开始学习。一直潜心学习web后端技术，一边学习一边积累经验，分享一些个人博客日记，以及旅游图片。
+    个人博客网站刚刚搭建，也是我人生自主开发的第一个博客。期间有很多的不容易，但是都没有放弃过。</div>
+  <div class="navlist">
+    <ul>
+      <li class="navcurrent"><a href="javascript::">基本信息</a> </li>
+      <li> <a href="javascript::" >学习技能</a> </li>
+      <li> <a href="javascript::" >趋势图</a> </li>
+      <li> <a href="javascript::" >一周阅读榜</a> </li>
+      <li> <a href="javascript::" >天气</a> </li>
+
+    </ul>
+  </div>
+  <div class="navtab">
+    <div class="navitem" name = "top1">
+      <div class="content">
+        <p>网名：Tml | 田敏伦</p>
+        <p>职业：Web后端设计师、网页设计 </p>
+                <p>邮箱：1272443075@qq.com</p>
+        <p>个人微信：</p>
+        <p><img src="../static/images/weipayimg.jpg" style="width: 140px; height: 140px;"></p>
+      </div>
+    </div>
+    <script>
+$(document).ready(function(){
+    
+    $('.navlist li').click(function(){
+                $(this).addClass('navcurrent').siblings().removeClass('navcurrent');
+                $('.navtab>div:eq('+$(this).index()+')').show().siblings().hide();
+            });
+    
+});
+      </script> 
+    <div class="navitem" name = "top1">
+      <div class="content">
+        <p class="ab_t">学习技能：</p>
+        <p>1、web后端页面的开发</p>
+        <p>2、根据产品需求，配合前端开发人员协作实现后端页面的功能</p>
+        <p>3、GitHub的基础</p>
+        <p>4、熟练使用html，CSS，python熟悉页面架构</p>
+        <p>5、熟练使用Django框架</p>
+      </div>
+    </div>
+
+
+    {# 阅读数 #}
+    <div class="navitem" name = "top1">
+        <p class="ab_t">阅读数：</p>
+       <!-- 图表容器 DOM -->
+        <div id="container" style="width: 600px;height:400px;"></div>
+            <script>
+        // 图表配置
+        var options = {
+            chart: {
+                type: 'line'                          //指定图表的类型，默认是折线图（line）
+            },
+            title: {
+                text: null                 // 标题
+            },
+            xAxis: {
+                categories: {{ dates|safe }},  // x 轴分类
+                tickmarkPlacement: 'on',//让月份的值对应到Y轴线上
+                title: { //标题
+                    text: '前七天的阅读变化'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: null                // y 轴标题
+                },
+                labels:{enabled:false}, //去掉y轴值
+                gridLineDashStyle:'Solid'//y轴线为虚线
+            },
+            series: [{                              // 数据列
+                name: '阅读数',                        // 数据列名
+                data: {{ read_nums }}              // 数据
+            }],
+            //在数据点上显示一些数据信息标签
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                        }
+                    }
+                },
+            //去掉图例
+            legend:{enabled:false},
+            //去掉版权信息
+            credits:{enabled:false}
+        };
+        // 图表初始化函数
+        var chart = Highcharts.chart('container', options);
+    </script>
+
+    </div>
+
+    <div class="navitem" name = "top1">
+      <div class="content">
+{#        <p class="ab_t">昨日阅读榜：</p>#}
+          <p>
+              <ul>
+                  {% for week in hot_read %}
+                        <li class="hot-read">
+                            <span style="margin-left: 5px;"></span>
+                            <span class="hot-read-span"></span>
+                           <a href="{% url 'info' week.id %}">{{ week.title }}</a>（{{ week.week_read_sum }}）</li>
+                    {% empty %}
+                      <li>--暂无阅读榜--</li>
+                  {% endfor %}
+              </ul>
+          </p>
+
+
+{#       <p>服务器：***服务器&nbsp;&nbsp;<a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=8smrzoqa&amp;productCode=vm" target="_blank">{# <span style="color:#FF0000;"><strong>前往阿里云官网购买&gt;&gt;</strong></span></a></p>#}
+{#        <p>备案号：蜀ICP备722501号-1</p>#}
+{#        <p>程 序：Python&nbsp; &nbsp;<u><a href="http://www.yangqq.com/blogs/876.html" target="_blank"><span style="color:#000000;">***？</span></a></u></p>#}
+
+
+
+      </div>
+    </div>
+    <div class="navitem" name = "top1">
+      <div class="content">
+
+        <p class="ab_t">天气：</p>
+        <p><a href="https://s.click.taobao.com/t?e=m%3D2%26s%3Dtx5qvgOp2sEcQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAv6rqJwbkViRJZyTmHFgi7toyO3ddgEZ98KZ%2FCBiGC%2BAA120cfxpzVcJ9DgiofYXHhmIkXBqRClNTcEU%2BDykfuSM%2BhtH71aX6uIOTs4KMj3yjpOyWSRdiSZDEm2YKA6YIrbIzrZDfgWtwGXLU4WXsy%2FSGTLzgkOZ%2F6tHZYFMpqEnXF%2B87KN7TKeiZ%2BQMlGz6FQ%3D%3D" target="_blank"><-- 正在开发中，敬请期待 --></a></p>
+{#        <p><a href="https://s.click.taobao.com/t?e=m%3D2%26s%3DBd7iLbiMBvscQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAv6rqJwbkViRlCnp0VPQiKVoyO3ddgEZ98KZ%2FCBiGC%2BAA120cfxpzVe3QAIFZ4qxdxmIkXBqRClNTcEU%2BDykfuSM%2BhtH71aX6uIOTs4KMj3yjpOyWSRdiSZDEm2YKA6YIrbIzrZDfgWtewfOCTsUhuL7A4ojqcFxLlxfvOyje0ynomfkDJRs%2BhU%3D" target="_blank">【推荐】阿里云学生特惠云服务器</a></p>#}
+                  <p class="ab_t">微信扫码打赏：</p>
+
+        <p><img src="../static/images/weipay.png" style="width: 220px; height: 199px;"></p>
+
+      </div>
+    </div>
+  </div>
+      <script>
+        $(document).ready(function(){
+                $('.navlist li').click(function(){
+                        $(this).addClass('navcurrent').siblings().removeClass('navcurrent');
+                        $('.content>div:eq('+$(this).index()+')').show().siblings().hide();
+                    });
+        });
+      </script>
+ </div>
+</article>
+<footer>
+
+  <p>Design by 田敏伦个人博客蜀ICP备722501号-1</p>
+
+</footer>
+<a href="#" class="cd-top">Top</a>
+
+{% endblock %}
+

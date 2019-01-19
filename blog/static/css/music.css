@@ -1,0 +1,37 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+#audioBox {
+    margin: 8px auto;
+    height: 150px;
+    width: 330px;
+    border-radius: 6px;
+    background: #ececec;
+    text-shadow: 0 0 black;
+    background-color: #fff;
+    box-shadow: 0 0 black;
+}
+.art {
+    background: url(http://www.lmlblog.com/blog/12/images/vinyl.png) no-repeat left;
+    width: 130px;
+    float: left;
+    background-size: 120px;
+    margin: 8px auto;
+}
+dd {
+    display: block;
+    margin-inline-start: 40px;
+}
+#audioBox dl dd {
+    color: #666;
+    line-height: 24px;
+}
+#audioBox dd span {
+    width: 12px;
+    height: 24px;
+    margin-right: 7px;
+    float: left;
+    display: block;
+}
+

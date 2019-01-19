@@ -1,0 +1,236 @@
+{# index,博客列表 #}
+{% extends 'base.html' %}
+{% load staticfiles %}
+<title>
+    {% block title_extends %}{% endblock %}
+</title>
+
+{% block head_extends %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../../static/css/base.css" rel="stylesheet">
+    <link href="../../../static/css/index.css" rel="stylesheet">
+    <link href="../../../static/css/m.css" rel="stylesheet">
+
+    <script src="../../../static/js/jquery.min.js" ></script>
+    <script src="../../../static/js/jquery.easyfader.min.js"></script>
+    <script src="../../../static/js/hc-sticky.js"></script>
+    <script src="../../../static/js/comm.js"></script>
+    <script src="../../../static/js/scrollReveal.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/modernizr.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block context %}
+    <article style="margin-top: 5em;">
+  <!--轮播图 begin-->
+  <div class="banner">
+    <div id="banner" class="fader">
+
+        <li class="slide" ><img src="{% static 'images/4.jpg' %}"><span class="imginfo">{# 个人博客 #}</span></li>
+      <li class="slide" ><img src="{% static 'images/2.jpg' %}"><span class="imginfo"></span></li>
+      <li class="slide" ><img src="{% static 'blog/images/nba.jpg' %}"><span class="imginfo"></span></li>
+      <div class="fader_controls">
+        <div class="page prev" data-target="prev">&lsaquo;</div>
+        <div class="page next" data-target="next">&rsaquo;</div>
+        <ul class="pager_list">
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--轮播图 end-->
+  <div class="toppic">
+    <li> <a href="https://space.bilibili.com/252028233/#/" target="_blank"> <i><img src="{% static 'blog/images/Django2.0img.webp' %}"></i>
+      <h2>Django2.0视频教程</h2>
+      <span>学无止境</span> </a> </li>
+    <li> <a href="/" target="_blank"> <i><img src="../../../static/images/2.jpg"></i>
+      <h2>个人博客，属于我的世界！</h2>
+      <span>关于我</span> </a> </li>
+  </div>
+  <main>
+  <div class="news_box">
+    <ul>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href="">第一课：创建博客</a></h3>
+      </li>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href="">第二课：常用的模板和过滤器</a></h3>
+      </li>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href=""></a>第三课：模板嵌套</h3>
+      </li>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href="">第四课：css页面优化</a></h3>
+      </li>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href="">第五课：css框架协助前端布局</a></h3>
+      </li>
+      <li><i><a href=""><img src="{% static 'blog/images/Django2.0img.webp' %}"></a></i>
+        <h3><a href="">第六课：Bootstrap响应式布局</a></h3>
+      </li>
+    </ul>
+  </div>
+  <div class="pics">
+    <ul>
+      <li><i><img src="{% static 'blog/images/nba.jpg' %}"></i><span>完美的背打</span></li>
+      <li><i><img src="{% static 'blog/images/nba1.jpg' %}"></i><span>经典的扣篮</span></li>
+      <li><i><img src="{% static 'blog/images/nba2.jpg' %}"></i><span>教科书般的投篮</span></li>
+
+    </ul>
+  </div>
+
+  <div class="blogtab">
+      {# 排序 #}
+          <ul id="blogtab">
+            <a href="?sort=&blog_type={{ blog_type_id }}"><li class="{% ifequal sort '' %}current{% endifequal %}">推荐博客</li></a>
+            <a href="?sort=hot&blog_type={{ blog_type_id }}"><li class="{% ifequal sort 'hot' %}current{% endifequal %}">热门</li></a>
+            <a href="?sort=ascending&blog_type={{ blog_type_id }}"><li class="{% ifequal sort 'ascending' %}current{% endifequal %}">升序</li></a>
+            <a href="?sort=descending&blog_type={{ blog_type_id }}"><li class="{% ifequal sort 'descending' %}current{% endifequal %}">降序</li></a>
+        {#    <li><a href="{% url 'time' %}">时间轴</a></li>#}
+        {#    <li><a href="">文字广告</a></li>#}
+          </ul>
+    {# 排序end #}
+
+    {# 分类筛选 #}
+      <ul id="blogtab">
+        {% for type in all_blog_type %}
+          <a href="?blog_type={{ type.id }}&sort={{ sort }}"><li class="{% ifequal blog_type_id type.id|stringformat:'i'  %}current{% endifequal %}">{{ type.name }}</li></a>
+        {% endfor %}
+      </ul>
+  {# 分类筛选end #}
+
+
+    {% for blog in all_blog.object_list %}
+        <div class="blogs" data-scroll-reveal="enter bottom over 1s" >
+        <h3 class="blogtitle"><a href="{% url 'article:article-detail' blog.pk %}">{{ blog.name }}</a></h3>
+        <span class="blogpic"><a href="{% url 'article:article-detail' blog.pk %}" title=""><img src="{{ MEDIA_URL }}{{ blog.image }}" alt=""></a></span>
+        <p class="blogtext">{{ blog.describe }}</p>
+        <div class="bloginfo">
+        <ul>
+
+          <li class="author">{{ blog.author }}</li>
+          <li class="lmname">{{ blog.blog_type }}</li>
+          <li class="timer"></li>
+          <li class="view"><span>{{ blog.click_nums }}</span>已阅读</li>
+          <li class="like">{{ blog.like_nums }}</li>
+          <li>收藏：{{ blog.fav_nums }}</li>
+        </ul>
+        </div>
+        </div>
+    {% empty %}
+        <p>暂无文章</p>
+    {% endfor %}
+
+    <div class="pagelist" style="text-align: center;">
+         {% if all_blog.has_previous %}
+             <a href="?{{ all_blog.previous_page_number.querystring }}">上一页</a>&nbsp;
+        {% endif %}
+        {% for page in all_blog.pages %}
+            {% if page %}
+                {# 如果是当前页面 #}
+                {% ifequal page all_blog.number %}
+                  <span><b style="color: #3690cf;text-shadow: #fff 1px 0 2px, #fff 0 1px 2px, #fff -1px 0 2px, #fff 0 -1px 2px;">{{ page }}</b></span>
+
+                {# 如果是当前页面end #}
+                {# 如果不是当前页面 #}
+                {% else %}
+                    <a href="?{{ page.querystring }}">{{ page }}</a>
+                {% endifequal %}
+                {# 如果不是当前页面end #}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        {% if all_blog.has_next %}
+            <a href="?{{ all_blog.next_page_number.querystring }}">下一页</a>&nbsp;
+        {% endif %}
+
+
+</div>
+  </main>
+  <aside class="r_box" >
+      <div class="about_me">
+        <h2>博主简介</h2>
+        <ul>
+          <i><img src="../../../static/images/4.jpg"></i>
+          <p><b>田敏伦</b>，男，一个90后草根男站长！17年开始学习。一直潜心研究web后端端技术，一边学习一边积累经验。</p>
+        </ul>
+      </div>
+
+{#      <div class="wdxc">#}
+{#        <h2>图片精选</h2>#}
+{#        <ul>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/1.jpg' %}"></a></li>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/3.jpg' %}"></a></li>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/6.jpg' %}"></a></li>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/7.jpg' %}"></a></li>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/8.jpg' %}"></a></li>#}
+{#          <li><a href="/"><img src="{% static 'blog/images/9.jpg' %}"></a></li>#}
+{#        </ul>#}
+{#      </div>#}
+
+      <div class="cloud">
+        <h2>标签云</h2>
+        <ul>
+          {% for blog_type in all_blog_type %}
+              <a href="?blog_type={{ blog_type.id }}">{{ blog_type.name }}</a>
+          {% endfor %}
+        </ul>
+      </div>
+
+{#      <div class="tuijian">#}
+{#        <h2 id="tab"><a href="#"class="current"></a><a href="#">点击排行</a><a href="#">站长推荐</a></h2>#}
+{##}
+{#     <div id="content">#}
+{#        <ul style="display:block;">#}
+{#          <li><a href="/">第二届 优秀个人博客模板比赛参选活动</a></li>#}
+{#          <li><a href="/">【活动作品】柠檬绿兔小白个人博客模板</a></li>#}
+{#          <li><a href="/">帝国cms 列表页调用子栏目，没有则不显示栏目名称</a></li>#}
+{#          <li><a href="/">2014年度优秀个人博客评选活动</a></li>#}
+{#          <li><a href="/">你是什么人便会遇上什么人</a></li>#}
+{#          <li><a href="/">帝国cms 列表页调用子栏目，没有则不显示栏目名称</a></li>#}
+{#          <li><a href="/">第二届 优秀个人博客模板比赛参选活动</a></li>#}
+{#          <li><a href="/">个人博客模板《绅士》后台管理</a></li>#}
+{#        </ul>#}
+{#                <ul>#}
+{#          <li><a href="/">你是什么人便会遇上什么人</a></li>#}
+{#          <li><a href="/">帝国cms 列表页调用子栏目，没有则不显示栏目名称</a></li>#}
+{#          <li><a href="/">第二届 优秀个人博客模板比赛参选活动</a></li>#}
+{#          <li><a href="/">个人博客模板《绅士》后台管理</a></li>#}
+{#          <li><a href="/">你是什么人便会遇上什么人</a></li>#}
+{#          <li><a href="/">帝国cms 列表页调用子栏目，没有则不显示栏目名称</a></li>#}
+{#          <li><a href="/">第二届 优秀个人博客模板比赛参选活动</a></li>#}
+{#          <li><a href="/">黑色质感时间轴html5个人博客模板</a></li>#}
+{#        </ul>#}
+{#        <ul>#}
+{#          <li><a href="/">个人博客，我为什么要用帝国cms？</a></li>#}
+{#          <li><a href="/">D设计师博客-一个热爱生活的设计师</a></li>#}
+{#          <li><a href="/">东轩博客，我看到了你的坚持！</a></li>#}
+{#          <li><a href="/">程序员创业，就得“豁得出去”！</a></li>#}
+{#          <li><a href="/">张建华 一个90后年轻站长！我们是对手亦是朋友！</a></li>#}
+{#          <li><a href="/">《奋斗电商》看知名微商如何做博客引流？</a></li>#}
+{#          <li><a href="/">《寻之旅》一个关于旅游，游记的个人博客</a></li>#}
+{#          <li><a href="/">【匆匆那些年】总结个人博客经历的这四年</a></li>#}
+{#        </ul>#}
+{#       </div>#}
+{#      </div>#}
+      <div class="guanzhu">
+        <h2>关注我</h2>
+        <ul>
+          <img src="{% static 'blog/images/weipayimg.jpg' %}">
+
+        </ul>
+      </div>
+
+  </aside>
+</article>
+<footer>
+
+  <p>Design by田敏伦个人博客蜀ICP备722501号-1</p>
+
+</footer>
+<a href="#" class="cd-top">Top</a>
+{% endblock %}
+
+
