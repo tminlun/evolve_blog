@@ -25,3 +25,15 @@
 .diggit a { color: #fff; }
 #diggnum { margin: 5px; }
 .guanzhu{}
+.fav .like{
+    color: #ccd0d7;;
+	cursor: pointer;
+	display: inline-block;
+	padding: 0.5em 0.3em;
+}
+.true_fav{
+    color: #db6e46;
+}
+.true_like{
+    color: #db6e46;
+}

@@ -94,6 +94,7 @@
 
     {# 分类筛选 #}
       <ul id="blogtab">
+        <a href="?blog_type="><li class="{% ifequal blog_type_id ''  %}current{% endifequal %}">全部</li></a>
         {% for type in all_blog_type %}
           <a href="?blog_type={{ type.id }}&sort={{ sort }}"><li class="{% ifequal blog_type_id type.id|stringformat:'i'  %}current{% endifequal %}">{{ type.name }}</li></a>
         {% endfor %}
@@ -154,7 +155,7 @@
         <h2>博主简介</h2>
         <ul>
           <i><img src="../../../static/images/4.jpg"></i>
-          <p><b>田敏伦</b>，男，一个90后草根男站长！17年开始学习。一直潜心研究web后端端技术，一边学习一边积累经验。</p>
+          <p><b>田敏伦</b>，男，一个90后草根男站长！</p>
         </ul>
       </div>
 
@@ -218,7 +219,7 @@
       <div class="guanzhu">
         <h2>关注我</h2>
         <ul>
-          <img src="{% static 'blog/images/weipayimg.jpg' %}">
+          <img src="{% static 'images/weipayimg.jpg' %}">
 
         </ul>
       </div>
@@ -227,7 +228,7 @@
 </article>
 <footer>
 
-  <p>Design by田敏伦个人博客蜀ICP备722501号-1</p>
+  <p>Design by田敏伦个人博客</p>
 
 </footer>
 <a href="#" class="cd-top">Top</a>

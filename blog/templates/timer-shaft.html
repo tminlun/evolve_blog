@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<title>{% block title_extends %}{% endblock %}</title>
+{% block head_extends %}
+    <meta name="keywords" content="个人博客,杨青个人博客,个人博客模板,杨青" />
+    <meta name="description" content="杨青个人博客，是一个站在web前端设计之路的女程序员个人网站，提供个人博客模板免费资源下载的个人原创网站。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../../static/css/base.css" rel="stylesheet">
+    <link href="../../../static/css/time.css" rel="stylesheet">
+    <link href="../../../static/css/m.css" rel="stylesheet">
+    <script src="../../../static/js/jquery.min.js" ></script>
+    <script src="../../../static/js/scrollReveal.js"></script>
+    <script src="../../../static/js/time.js" ></script>
+    <!--[if lt IE 9]>
+    <script src="js/modernizr.js"></script>
+    <![endif]-->
+
+{# 视频 #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/video-js.min.css' %}">
+<script src="{% static 'js/video.min.js' %}" type="text/javascript"></script>
+
+    <style>
+        .video-js .vjs-big-play-button {
+            top: 50%;
+            left: 50%;
+        }
+    </style>
+{# 视频end #}
+
+{% endblock %}
+<title>首页_杨青个人博客 - 一个站在web前端设计之路的女技术员个人博客网站</title>
+
+{% block context %}
+    <article style="margin-top: 5em;">
+  <div class="timebox">
+    <ul>
+        {% for blog in blogs.object_list %}
+            <li><span>{{ blog.add_time|date:"Y年m月d日 G:i" }}</span><i><a href="{% url 'article:article-detail' blog.pk %}">{{ blog.name }}</a></i></li>
+        {% empty %}
+            <p>--暂无博客--</p>
+        {% endfor %}
+    </ul>
+  </div>
+
+        <div class="pagelist" style="text-align: center;">
+         {% if blogs.has_previous %}
+             <a href="?{{ blogs.previous_page_number.querystring }}">上一页</a>&nbsp;
+        {% endif %}
+        {% for page in blogs.pages %}
+            {% if page %}
+                {# 如果是当前页面 #}
+                {% ifequal page blogs.number %}
+                  <span><b style="color: #3690cf;text-shadow: #fff 1px 0 2px, #fff 0 1px 2px, #fff -1px 0 2px, #fff 0 -1px 2px;">{{ page }}</b></span>
+
+                {# 如果是当前页面end #}
+                {# 如果不是当前页面 #}
+                {% else %}
+                    <a href="?{{ page.querystring }}">{{ page }}</a>
+                {% endifequal %}
+                {# 如果不是当前页面end #}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        {% if blogs.has_next %}
+            <a href="?{{ blogs.next_page_number.querystring }}">下一页</a>&nbsp;
+        {% endif %}
+
+
+</div>
+</article>
+<footer>
+  <p>Design by田敏伦个人博客蜀ICP备722501号-1</p>
+</footer>
+<a href="#" class="cd-top">Top</a>
+
+
+    <div style="width:1200px;height: 650px; margin-left:100px">
+                <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="1200"
+                       poster="http://video-js.zencoder.com/oceans-clip.png"
+                       data-setup="" type="video/mp4">
+                    <source src="">
+                </video>
+            </div>
+{% endblock %}

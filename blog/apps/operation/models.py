@@ -59,6 +59,21 @@ class UserFavorite(models.Model):
         return '{0}收藏了{1}'.format(self.user,self.fav_blog)
 
 
+class FavoriteCount(models.Model):
+    """
+        用户收藏数量
+    """
+    fav_blog = models.ForeignKey(Blog, on_delete=models.CASCADE, verbose_name="收藏的博客")
+    fav_nums = models.IntegerField(default=0,verbose_name="收藏数量")
+
+    class Meta:
+        verbose_name = "收藏数量"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.fav_nums
+
+
 class UserLike(models.Model):
     """
     用户点赞
@@ -74,3 +89,17 @@ class UserLike(models.Model):
     def __str__(self):
         return '{0}点赞了{1}'.format(self.user, self.like_blog)
 
+
+class LikeCount(models.Model):
+    """
+        用户点赞数量
+    """
+    like_blog = models.ForeignKey(Blog, on_delete=models.CASCADE, verbose_name="点赞的博客")
+    like_nums = models.IntegerField(default=0,verbose_name="点赞数量")
+
+    class Meta:
+        verbose_name = "点赞数量"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.like_nums

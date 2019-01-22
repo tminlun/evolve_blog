@@ -27,8 +27,8 @@ class Blog(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="作者")
     related = models.CharField(max_length=20,blank=True, verbose_name="相关博客")
     click_nums = models.IntegerField(default=0, verbose_name="点击数")
-    fav_nums = models.IntegerField(default=0,verbose_name='收藏人数')
-    like_nums = models.IntegerField(default=0,verbose_name='喜欢人数')
+    # fav_nums = models.IntegerField(default=0,verbose_name='收藏人数')
+    # like_nums = models.IntegerField(default=0,verbose_name='喜欢人数')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:

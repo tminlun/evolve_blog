@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path,include,re_path
 from django.views.generic import TemplateView
 from users.views import HomeView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView,ResetView,ModifyPwdView
+from article.views import TimerShaftView
 from django.conf import settings #上传图片
 from django.conf.urls.static import static #上传图片
 
 
 urlpatterns = [
-    path('xadmin/', xadmin.site.urls),
+    path('xadmin/', xadmin.site.urls,name="xadmin"),
     path('',HomeView.as_view(),name="home"), #首页
     path('login/',LoginView.as_view(),name="login"), #登录
     path('signup/',RegisterView.as_view(),name="signup"), #注册
@@ -35,5 +36,6 @@ urlpatterns = [
     path('modify_pwd/',ModifyPwdView.as_view(), name="modify_pwd"), #重设密码
 
     path('article/',include('article.urls',namespace='article')), #文章
+    path('timer_shaft/',TimerShaftView.as_view(), name="timer_shaft"), #时间轴
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

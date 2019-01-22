@@ -129,47 +129,45 @@
         <li id="{% if request.path|slice:'8' == '/article' %}selected{% endif %}"><a href="{% url 'article:article-list' %}">文章</a></li>
 {#      <li id="{% block nav_share %}{% endblock %}"><a href="../myblog/templates/blog/share.html">慢生活</a></li>#}
       <li id="{% block nav_list %}{% endblock %}"><a href="">图片集锦</a></li>
-      <li class="menu" id="{% block nav_fengmian %}{% endblock %}"><a href="">学无止境</a>
-        <ul class="sub">
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">注销</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">登录</a></li>
-            {% endif %}
+    <li><a href="http://127.0.0.1:8000/xadmin" target="_blank">后台管理</a></li>
+{#      <li class="menu" id=""><a href="">学无止境</a>#}
+    {#    <ul class="sub">#}
+    {##}
+    {#     </ul>#}
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">注销</a></li>
+    {% else %}
+        <li id="{% if request.path|slice:'6' == '/login' %}selected{% endif %}"><a href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a></li>
+    {% endif %}
 
-              <li><a href="{% url 'signup' %}">注册</a></li>
-        </ul>
+    <li id="{% if request.path|slice:'7' == '/signup' %}selected{% endif %}"><a href="{% url 'signup' %}">注册</a></li>
 
-        <li><a href="">时间轴</a></li>
+
+     <li id="{% if request.path|slice:'6' == '/timer' %}selected{% endif %}"><a href="{% url 'timer_shaft' %}">时间轴</a></li>
     </ul>
     <div class="searchbox">
       <div id="search_bar" class="search_bar">
 {#        <form  id="searchform" action="[!--news.url--]e/search/index.php" method="post" name="searchform">#}
           <input class="input" placeholder="想搜点什么呢.." type="text" name="keyboard" id="search_keywords">
-{#          <input type="hidden" name="show" value="title" />#}
-{#          <input type="hidden" name="tempid" value="1" />#}
-{#          <input type="hidden" name="tbname" value="news">#}
-{#          <input type="hidden"  name="Submit" value="搜索" />#}
           <p class="search_ico" id="jsSearchBtn"> <span></span></p>
-{#        </form>#}
+
       </div>
     </div>
       <script type="text/javascript">
-             //顶部搜索栏搜索方法
-    $('#jsSearchBtn').on('click',function(){
-        search_click()
-    });
+            //顶部搜索栏搜索方法
+            $('#jsSearchBtn').on('click',function(){
+                search_click()
+            });
 
-
-function search_click(){
-        keywords = $('#search_keywords').val(),//1、获取用户输入（search_keywords）的值
-        request_url = "/article/article-list?keywords="+keywords; //根据type获取到url，再通过此url跳转到 要搜索的页面
-    if(keywords == ""){
-        return //如果用户输入为空，刷新页面（返回空）
-    }
-    //点击搜索后，转跳页面
-    window.location.href = request_url
-}
+            function search_click(){
+                    keywords = $('#search_keywords').val();//1、获取用户输入（search_keywords）的值
+                    request_url = "/article/article-list?keywords="+keywords; //根据type获取到url，再通过此url跳转到 要搜索的页面
+                if(keywords == ""){
+                    return //如果用户输入为空，刷新页面（返回空）
+                }
+                //点击搜索后，转跳页面
+                window.location.href = request_url
+            }
       </script>
   </nav>
 </header>
