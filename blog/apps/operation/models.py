@@ -103,3 +103,20 @@ class LikeCount(models.Model):
 
     def __str__(self):
         return self.like_nums
+
+
+class Photo(models.Model):
+    """图片描述"""
+    author = models.ForeignKey(UserProfile,on_delete=models.CASCADE, verbose_name="作者")
+    photo = models.ImageField(upload_to="photo/%Y%m", null=True,blank=True, verbose_name="图片")
+    describe = models.CharField(max_length=100,null=True,blank=True, verbose_name="描述")
+    photo_type = models.CharField(max_length=20,verbose_name="图片类型",blank=True)
+    add_time = models.DateTimeField(auto_now_add=True, verbose_name="时间")
+
+    class Meta:
+        verbose_name = "图片"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return "{0}添加了图片".format(self.author)
+

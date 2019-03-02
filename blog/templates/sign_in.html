@@ -1,19 +1,7 @@
+{% extends 'login.html' %}
 {% load staticfiles %}
+{% block login_title %}注册{% endblock %}
 
-
-{% block head_extends %}
-
-    <meta charset="UTF-8">
-    <meta name="keywords" content="" />
-	<meta name="description" content="" />
-
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'fonts/iconic/css/material-design-iconic-font.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
     <div class="limiter">
@@ -104,11 +92,7 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
 
-{% block script_extends %}
-    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-	<script src="{% static 'js/main.js' %}"></script>
     {# 登录|注册 #}
     <script type="text/javascript">
         //验证码刷新
@@ -123,3 +107,4 @@
 
     </script>
 {% endblock %}
+}

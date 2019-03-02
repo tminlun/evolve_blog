@@ -2,8 +2,9 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger #分页
 from django.shortcuts import render,get_object_or_404
 from django.views import View
 from django.db.models import Q
-from .models import Blog, BlogType
 from operation.models import CourseComments, UserFavorite, FavoriteCount,UserLike,LikeCount
+from .models import Blog, BlogType
+from users.models import Banner
 # Create your views here.
 
 
@@ -42,11 +43,16 @@ class AticleListView(View):
             page = 1  # 出现异常显示第一页
         p = Paginator(all_blog, 5, request=request)  # 进行分页，每5个作为一页
         blogs = p.page(page)  # 获取当前页面
+
+        #轮播图
+        all_banner = Banner.objects.all().order_by("index")  # 轮播图
+
         return render(request, 'article-list.html', {
             'all_blog': blogs,
             'all_blog_type': all_blog_type,
             'sort': sort,
             'blog_type_id': blog_type_id,#分类筛选
+            "all_banner": all_banner,
         })
 
 

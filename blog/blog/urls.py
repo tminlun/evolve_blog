@@ -17,7 +17,7 @@ import xadmin
 from django.contrib import admin
 from django.urls import path,include,re_path
 from django.views.generic import TemplateView
-from users.views import HomeView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView,ResetView,ModifyPwdView
+from users.views import HomeView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView,ResetView,ModifyPwdView, MyOperationView
 from article.views import TimerShaftView
 from django.conf import settings #上传图片
 from django.conf.urls.static import static #上传图片
@@ -34,8 +34,9 @@ urlpatterns = [
     path('forget/', ForgetPwdView.as_view(), name="forget_pwd"),#忘记密码页面
     re_path('reset/(?P<active_code>.*)/', ResetView.as_view(), name="reset_pwd"), #找回密码激活
     path('modify_pwd/',ModifyPwdView.as_view(), name="modify_pwd"), #重设密码
-
     path('article/',include('article.urls',namespace='article')), #文章
     path('timer_shaft/',TimerShaftView.as_view(), name="timer_shaft"), #时间轴
+    path('ueditor/', include('DjangoUeditor.urls')), #富文本
+    path('myoperation/', MyOperationView.as_view(), name="myoperation"), #富文本
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 from django.db.models import ObjectDoesNotExist
-from .models import CourseComments, UserFavorite,FavoriteCount,UserLike,LikeCount
+from .models import CourseComments, UserFavorite,FavoriteCount,UserLike,LikeCount,Photo
 from article.models import Blog
 from users.models import UserProfile
 # Create your views here.
@@ -64,8 +65,8 @@ class ReplyCommentView(View):
         reply_id = int(request.POST.get('reply_comment_id', 0))#上一级回复的id
         reply_user_id = int(request.POST.get('reply_user_id', 0))#上一级回复user的id
         blog_pk = int(request.POST.get('blog_pk', 0))  # 课程id
-        root_comment_text = request.POST.get('comment', '')  # 回复顶级评论的内容
-        ptn_text = request.POST.get('ptn', '')  # 回复回复评论的内容
+        comment_text = request.POST.get('comment_text', '')  # 回复顶级评论的内容
+        # ptn_text = request.POST.get('ptn', '')  # 回复回复评论的内容
 
         try:
             root_id = CourseComments.objects.get(pk=root_id)#获取"一个"评论对象（顶级评论）
@@ -81,14 +82,15 @@ class ReplyCommentView(View):
         course_comment.root = root_id
         course_comment.parent = reply_id
         course_comment.reply_to = reply_user_id
-        if ptn_text == '':#如果回复评论的内容为空，则把回复顶级内容赋值给评论内容
-            if root_comment_text == '':#如果回复顶级内容为空，抛出错误
-                return Fail('回复不能为空')
-            course_comment.comment = root_comment_text
-        else:
-            if ptn_text == '':#如果回复回复评论内容为空，抛出错误
-                return Fail('回复不能为空')
-            course_comment.comment = ptn_text
+        course_comment.comment = comment_text
+        # if ptn_text == '':#如果回复评论的内容为空，则把回复顶级内容赋值给评论内容
+        #     if root_comment_text == '':#如果回复顶级内容为空，抛出错误
+        #         return Fail('回复不能为空')
+        #     course_comment.comment = root_comment_text
+        # else:
+        #     if ptn_text == '':#如果回复回复评论内容为空，抛出错误
+        #         return Fail('回复不能为空')
+        #     course_comment.comment = ptn_text
         course_comment.save()
         return Success('评论成功') #坑，保存数据库后，记得返回ajax成功信息使得刷新页面
 
@@ -187,3 +189,71 @@ class AddLikeView(View):
             else:
                 # 没有收藏
                 return Fail('您未点赞')
+
+
+class PhotoView(View):
+    """图片展示"""
+
+    def get(self, request):
+        all_photo = Photo.objects.all()
+        top = str(request.GET.get('top', ''))
+        if top:
+            all_photo = all_photo.filter(photo_type=top)
+        return render(request, 'photo.html', {
+            'all_photo': all_photo,
+            'top': top,
+        })
+
+    def post(self, request):
+        user = request.user
+        # 处理数据
+        photo_detail = request.FILES.get('photo', '')
+        type = request.POST.get('photo_type', '')
+        text = request.POST.get('text', '')
+
+        # 实例化图片对象
+        obj = Photo(
+            author=user,
+            photo=photo_detail,
+            photo_type=type,
+            describe=text
+        )
+        obj.save()
+        return render(request, 'photo.html')
+
+
+class AddPhotoView(View):
+    """图片上传"""
+    def get(self, request):
+        all_photo = Photo.objects.all()
+        top = request.GET.get('top', '')
+        if top:
+            all_photo = all_photo.filter(photo_type=top)
+        return render(request, 'photo.html', {
+            'all_photo': all_photo,
+        })
+
+    def post(self, request):
+        user = request.user
+        # 处理数据
+        photo_detail = request.FILES.get('photo', '')
+        type = request.POST.get('photo_type', '')
+        text = request.POST.get('text', '')
+
+        # 实例化图片对象
+        obj = Photo(
+            author=user,
+            photo=photo_detail,
+            photo_type=type,
+            describe=text
+        )
+        obj.save()
+        return render(request, 'photo.html')
+
+
+class CommentDelView(View):
+    """评论删除"""
+    def post(self, request):
+        del_pk = int(request.POST.get('del_pk', ''))
+        CourseComments.objects.filter(id=del_pk).delete()
+        return Success('删除成功')

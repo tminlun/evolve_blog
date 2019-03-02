@@ -4,7 +4,7 @@ __date__: '2019/1/12 0012 17:02'
 
 
 import xadmin
-from .models import UserAsk,CourseComments,UserFavorite,UserLike
+from .models import UserAsk,CourseComments,UserFavorite,UserLike, Photo
 
 
 class UserAskAdmin(object):
@@ -43,7 +43,18 @@ class UserLikeAdmin(object):
     list_filter = ['user', 'like_blog', 'add_time']
 
 
+class PhotoAdmin(object):
+    # 显示的列
+    list_display = ('author', 'photo', 'describe', 'photo_type', 'add_time')
+    # 搜索的字段，不要添加时间搜索
+    search_fields = ['author', 'photo', 'describe', 'photo_type']
+    # 过滤
+    list_filter = ['author', 'photo', 'describe', 'photo_type', 'add_time']
+
+
 xadmin.site.register(UserAsk, UserAskAdmin)
 xadmin.site.register(CourseComments, CourseCommentsAdmin)
 xadmin.site.register(UserFavorite, UserFavoriteAdmin)
 xadmin.site.register(UserLike, UserLikeAdmin)
+xadmin.site.register(Photo, PhotoAdmin)
+

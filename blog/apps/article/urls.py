@@ -4,7 +4,7 @@ __date__: '2019/1/17 0017 17:53'
 
 from django.urls import path
 from .views import AticleListView, AticleDetailView
-from operation.views import AddCommentView, ReplyCommentView, AddFavView, AddLikeView
+from operation.views import AddCommentView, ReplyCommentView, AddFavView, AddLikeView, PhotoView, AddPhotoView,CommentDelView
 
 app_name = "article"
 
@@ -15,5 +15,9 @@ urlpatterns = [
     path('add_comment/',AddCommentView.as_view(), name="add_comment"), #评论功能
     path('reply_comment/', ReplyCommentView.as_view(), name="reply_comment"),#回复
     path('add_fav/', AddFavView.as_view(), name="add_fav"),#收藏
-    path('add_like/', AddLikeView.as_view(), name="add_like"),#收藏
+    path('add_like/', AddLikeView.as_view(), name="add_like"),#点赞
+    path('photo/', PhotoView.as_view(), name="photo"),  #图片
+    path('add_photo/', AddPhotoView.as_view(), name="add_photo"),  # 图片
+    path('comment_del', CommentDelView.as_view(), name="comment_del"), #评论删除
+
 ]

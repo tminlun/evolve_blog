@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<title>
+    {% block title_extends %}我的收藏{% endblock %}
+</title>
+
+{% block head_extends %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../../static/css/base.css" rel="stylesheet">
+    <link href="../../../static/css/index.css" rel="stylesheet">
+    <link href="../../../static/css/m.css" rel="stylesheet">
+
+    <script src="../../../static/js/jquery.min.js" ></script>
+    <script src="../../../static/js/jquery.easyfader.min.js"></script>
+    <script src="../../../static/js/hc-sticky.js"></script>
+    <script src="../../../static/js/comm.js"></script>
+    <script src="../../../static/js/scrollReveal.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/modernizr.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block context %}
+    <article style="position: relative; top: 5em;">
+        <main>
+            {% for user_fav in user_favs.object_list %}
+                <div class="blogs" data-scroll-reveal="enter bottom over 1s" >
+                      <h3 class="blogtitle"><a href="{% url 'article:article-detail' user_fav.fav_blog.id %}">{{ user_fav.fav_blog.name }}</a></h3>
+                      <p class="blogtext">{{ user_fav.fav_blog.describe }}</p>
+                      <div class="bloginfo">
+                        <ul>
+                          <li class="author"><a href="/">{{ user_fav.fav_blog.author }}</a></li>
+                          <li class="lmname"><a href="/">{{ user_fav.fav_blog.blog_type }}</a></li>
+                          <li class="timer">{{ user_fav.fav_blog.add_time }}</li>
+                          <li class="view">{{ user_fav.fav_blog.click_nums }}</li>
+                        </ul>
+                      </div>
+                </div>
+            {% empty %}
+                <p>-暂无收藏的博客-</p>
+            {% endfor %}
+
+            {# 分页 #}
+            <div class="pagelist">
+                {% if user_favs.has_previous %}
+             <a href="?{{ user_favs.previous_page_number.querystring }}">上一页</a>&nbsp;
+        {% endif %}
+        {% for page in user_favs.pages %}
+
+            {% if page %}
+                {# 如果是当前页面 #}
+                {% ifequal page user_favs.number %}
+                  <b>{{ page }}</b>
+
+                {# 如果是当前页面end #}
+                {# 如果不是当前页面 #}
+                {% else %}
+                    <a href="?{{ page.querystring }}">{{ page }}</a>
+                {% endifequal %}
+                {# 如果不是当前页面end #}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        {% if user_favs.has_next %}
+            <a href="?{{ user_favs.next_page_number.querystring }}">下一页</a>&nbsp;
+        {% endif %}
+
+            </div>
+            {# 分页end #}
+        </main>
+        <aside class="r_box" >
+        </aside>
+    </article>
+    <footer>
+        <p>Design by田敏伦 </p>
+    </footer>
+    <a href="#" class="cd-top">Top</a>
+{% endblock %}

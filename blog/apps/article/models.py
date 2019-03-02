@@ -1,3 +1,4 @@
+from DjangoUeditor.models import UEditorField
 from django.db import models
 from datetime import datetime
 from users.models import UserProfile
@@ -22,7 +23,8 @@ class Blog(models.Model):
     name = models.CharField(max_length=20, verbose_name="标题")
     blog_type = models.ForeignKey(BlogType, on_delete=models.CASCADE, verbose_name="博客类型")
     describe = models.CharField(max_length=100, verbose_name="描述",null=True,blank=True)
-    detail = models.CharField(max_length=300,verbose_name="内容")
+    #注意filePath、imagePath是相对路径，所以前面不用加/
+    detail = UEditorField(verbose_name=u'课程内容', width=600, height=300, imagePath="blog/ueditor/", filePath="blog/ueditor/", default='', upload_settings={"imageMaxSize":204000})
     image = models.ImageField(upload_to="blog/%Y%m",null=True,blank=True,verbose_name="图片")
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="作者")
     related = models.CharField(max_length=20,blank=True, verbose_name="相关博客")
@@ -46,6 +48,7 @@ class Blog(models.Model):
         else:
             return self.detail
 
+
 #博客资源
 class CourseResource(models.Model):
     """博客资源"""
@@ -60,3 +63,5 @@ class CourseResource(models.Model):
 
     def __str__(self):
         return self.name
+
+

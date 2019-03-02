@@ -20,6 +20,7 @@
     <!--[if lt IE 9]>
     <script src="js/modernizr.js"></script>
     <![endif]-->
+    <script type="text/javascript" src="{% static 'js/love.js' %}"></script>
 {% endblock %}
 
 {% block context %}
@@ -27,15 +28,14 @@
   <!--轮播图 begin-->
   <div class="banner">
     <div id="banner" class="fader">
-
-        <li class="slide" ><img src="{% static 'images/4.jpg' %}"><span class="imginfo">{# 个人博客 #}</span></li>
-      <li class="slide" ><img src="{% static 'images/2.jpg' %}"><span class="imginfo"></span></li>
-      <li class="slide" ><img src="{% static 'blog/images/nba.jpg' %}"><span class="imginfo"></span></li>
+        {% for banner in all_banner %}
+            <li class="slide" ><img src="{{ MEDIA_URL }}{{ banner.image }}"><span class="imginfo">{{ banner.title }}</span></li>
+        {% endfor %}
       <div class="fader_controls">
-        <div class="page prev" data-target="prev">&lsaquo;</div>
-        <div class="page next" data-target="next">&rsaquo;</div>
-        <ul class="pager_list">
-        </ul>
+            <div class="page prev" data-target="prev">&lsaquo;</div>
+            <div class="page next" data-target="next">&rsaquo;</div>
+            <ul class="pager_list">
+            </ul>
       </div>
     </div>
   </div>

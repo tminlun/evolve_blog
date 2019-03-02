@@ -4,6 +4,7 @@ __date__: '2019/1/12 0012 19:52'
 
 from django import forms
 from captcha.fields import CaptchaField
+from .models import UserProfile
 
 class LoginForm(forms.Form):
     """登录表单"""
@@ -28,3 +29,4 @@ class ForgetPwdForm(forms.Form):
 class ModifyPwdForm(forms.Form):
     password1 = forms.CharField(required=True, min_length=5)
     password2 = forms.CharField(required=True, min_length=5)
+

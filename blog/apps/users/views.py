@@ -1,14 +1,18 @@
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger #分页
 from django.shortcuts import render,redirect,reverse
 from django.views.generic import View
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.hashers import make_password
 from .models import UserProfile
 from .forms import LoginForm,RegisterForm,ForgetPwdForm,ModifyPwdForm
-from .models import EmailVerifyRecord
+from .models import EmailVerifyRecord, Banner
 from utils.email_send import send_register_email
+from utils.mixin_utils import LoginRequiredMixin
+from operation.models import UserFavorite, FavoriteCount
+from article.models import Blog
 # Create your views here.
 
 
@@ -119,8 +123,11 @@ class RegisterView(View):
             user.is_active = False
             user.save()
             #发送邮箱
-            send_register_email(email, 'register')
-            return render(request, 'login.html',{'msg':'邮箱已发送,请激活'})  # 注册完跳到登录页面
+            try:
+                send_register_email(email, 'register')
+            except Exception:
+                return render(request, 'sign_in.html', {'msg': '邮箱出错'})
+            return render(request, 'login.html',{'msg':'激活码已发送到QQ邮箱,请前往激活'})  # 注册完跳到登录页面
         else:
             return render(request, 'sign_in.html', {
                 'register_form': register_form, #抛出forms错误
@@ -174,8 +181,10 @@ class ModifyPwdView(View):
             user.save()
             return redirect('login')
         else:
+            email = request.POST.get('email', '')
             return render(request, 'password_reset.html', {
                 'modify_form': modify_form,
+                'email':email,
             })
 
 
@@ -217,7 +226,21 @@ class HomeView(View):
     """首页"""
     def get(self,request):
         return render(request, 'home.html',{
+
         })
 
 
+class MyOperationView(View):
+    def get(self, request):
+        user_favs = UserFavorite.objects.filter(user=request.user)
 
+        # 分页功能
+        try:
+            page = request.GET.get('page', 1)  # 获取n（page=n）,默认显示第一页
+        except PageNotAnInteger:
+            page = 1  # 出现异常显示第一页
+        p = Paginator(user_favs,1, request=request)  # 进行分页，每5个作为一页
+        favs = p.page(page)  # 获取当前页面
+        return render(request, 'myoperation.html',{
+            'user_favs': favs,
+        })

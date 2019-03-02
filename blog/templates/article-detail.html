@@ -4,37 +4,74 @@
 <title>{% block title_extends %}{{ blog_detail.name }}{% endblock %}</title>
 {% block head_extends %}
     <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
     <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../../../static/css/base.css" rel="stylesheet">
-    <link href="../../../static/css/index.css" rel="stylesheet">
-    <link href="../../../static/css/info.css" rel="stylesheet">
-    <link href="../../../static/css/m.css" rel="stylesheet">
-    <script src="../../../static/js/jquery.min.js" ></script>
-    <script src="../../../static/js/jquery.easyfader.min.js"></script>
-    <script src="../../../static/js/hc-sticky.js"></script>
-    <script src="../../../static/js/comm.js"></script>
-    <script src="../../../static/js/scrollReveal.js"></script>
-    <!--[if lt IE 9]>
-    <script src="js/modernizr.js"></script>
-
-    <![endif]-->
     <script type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'css/info.css' %}" rel="stylesheet">
+    <link href="{% static 'css/m.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery.min.js' %}" ></script>
+    <script src="{% static 'js/jquery.easyfader.min.js' %}"></script>
+    <script src="{% static 'js/hc-sticky.js' %}"></script>
+    <script src="{% static 'js/comm.js' %}"></script>
+    <script src="{% static 'js/scrollReveal.js' %}"></script>
+    
+    <!--emojione v2.1.1 使用bootstrap的cdn-->
+    <script type="text/javascript" src="http://cdn.bootcss.com/emojione/2.1.1/lib/js/emojione.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/emojione/2.1.1/assets/sprites/emojione.sprites.css">
+    <!--emojionearea-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/emojionearea-2.1.3.min.css' %}">
+    <script type="text/javascript" src="{% static 'js/emojionearea-2.1.3.min.js' %}"></script>
+        <!--[if lt IE 9]>
+        <script src="js/modernizr.js"></script>
+    
+        <![endif]-->
 
-<!--emojione v2.1.1 使用bootstrap的cdn-->
-<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/emojione/2.1.1/assets/sprites/emojione.sprites.css">
-<script type="text/javascript" src="http://cdn.bootcss.com/emojione/2.1.1/lib/js/emojione.min.js"></script>
-
-<!--emojionearea-->
-<link rel="stylesheet" type="text/css" href="{% static 'css/emojionearea-2.1.3.min.css' %}">
-<script type="text/javascript" src="{% static 'js/emojionearea-2.1.3.min.js' %}"></script>
 {% endblock %}
 
 {% block context %}
+    {#    回复评论弹框        #}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content" style="position: relative;top: 4em;">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">回复框</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                            {# 第三方 #}
+                                {# 上一级评论的主键 #}
+                                <input type="hidden" id="reply_comment_id" name="reply_comment_id">
+                                {# 上一级评论的主键end #}
+                                {# 顶级评论pk #}
+                                <input type="hidden" id="root_comment_id" name="root_comment_id">
+                                {# 顶级评论end #}
+                                {# 上一级评论的user的主键 #}
+                                <input type="hidden" id="reply_user_id" name="reply_user_id">
+                                {# 上一级评论的主键end #}
+                            {# 第三方end #}
+                        <label for="message-text" class="control-label">内容:</label>
+                        <textarea class="form-control" id="comment_text"></textarea>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class="btn btn-primary reply-submit">提交</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+    {#    回复评论弹框end        #}
+
     <article style="margin-top: 5em">
   <main>
   <div class="infosbox">
@@ -64,15 +101,16 @@
           </div>
       <div class="news_about"><strong>简介</strong>{{ blog_detail.describe }}</div>
 {#      <div class="news_con"><strong></strong><br>#}
-
-        {{ blog_detail.detail|safe }}<br>
+        {% autoescape off %}
+            {{ blog_detail.detail|safe }}<br>
+        {% endautoescape %}
         <br>
         <img alt="" src="{{ MEDIA_URL }}{{ blog_detail.image }}"><br>
 
         &nbsp; </div>
     </div>
     <div class="share">
-      <div class="diggit"><a href="JavaScript:makeRequest('/e/public/digg/?classid=3&amp;id=19&amp;dotop=1&amp;doajax=1&amp;ajaxarea=diggnum','EchoReturnedText','GET','');"> 很赞哦！ </a>(<b id="diggnum"><script type="text/javascript" src="/e/public/ViewClick/?classid=2&id=20&down=5"></script>13</b>)</div>
+{#      <div class="diggit"><a href="JavaScript:makeRequest('/e/public/digg/?classid=3&amp;id=19&amp;dotop=1&amp;doajax=1&amp;ajaxarea=diggnum','EchoReturnedText','GET','');"> 很赞哦！ </a>(<b id="diggnum"><script type="text/javascript" src="/e/public/ViewClick/?classid=2&id=20&down=5"></script>13</b>)</div>#}
     </div>
     <div class="nextinfo">
         {% if previous_blog %}
@@ -93,53 +131,20 @@
             {# 评论框 #}
              {% if request.user.is_authenticated %}
               {# 内容 #}
-                  {# 富文本 #}
-                   <textarea name="text" id="id_comment" class="form-control" cols="30" rows="4"></textarea>
-                   {# 错误提示 #}
-                   <span id="comment_error" class="text-danger pull-left"></span>
-                    {# 获取类型、ID#}
-
-                  <div class="modal-footer">
-                    <button id="js-pl-submit" type="button" class="btn btn-primary">提交评论</button>
-                  </div>
+                 <form method="POST" id="comment_form">
+                      {# 富文本 #}
+                       <textarea name="comments" id="id_comment" class="form-control" cols="30" rows="4"></textarea>
+                     <input type="hidden" name="blog_id" value="{{ blog_detail.id }}">
+                       {# 错误提示 #}
+                       <span id="comment_error" class="text-danger pull-left"></span>
+                        {# 获取类型、ID#}
+                      <div class="modal-footer">
+                        <button id="js-pl-submit" type="button" class="btn btn-primary">提交评论</button>
+                      </div>
+                 </form>
               {# 内容end #}
             <script type="text/javascript">
 
-            $("#id_comment").emojioneArea();//显示表情框
-
-            $('#js-pl-submit').on('click', function(){
-                //获取输入的值，如果为空：评论不能为空；否则提交ajax
-                var comments = $("#id_comment").val();
-
-                if(comments.length == 0){
-                    alert("评论不能为空");
-                    return
-                }
-                $.ajax({
-                    cache: false,
-                    type: "POST",
-                    url:"{% url 'article:add_comment' %}",
-                    //把数据传给后端（"comments"：内容,course_id：课程的id，为了得到哪个app(对象)评论）
-                    data:{'blog_id':{{ blog_detail.id }}, 'comments':comments},
-                    //异步成功
-                    async: true,
-                    beforeSend:function(xhr, settings){
-                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");//csrf_token：不用form表单
-                    },
-                    success: function(data) {
-                        if(data.status == 'fail'){
-                            if(data.msg == '用户未登录'){
-                                window.location.href="{% url 'login' %}";
-                            }else{
-                                alert(data.msg) //输出其他错误
-                            }
-
-                        }else if(data.status == 'success'){
-                            window.location.reload();//成功，刷新当前页面.自动去掉刚刚评论的内容
-                        }
-                    },
-                });
-            });
             </script>
     {% else %}
         <p style="font-weight: bold;">
@@ -153,17 +158,6 @@
       {# 评论框end #}
           {# 评论列表 #}
    <div class="comment_content">
-    {# 第三方 #}
-        {# 上一级评论的主键 #}
-        <input type="hidden" id="reply_comment_id" name="reply_comment_id">
-        {# 上一级评论的主键end #}
-        {# 顶级评论pk #}
-        <input type="hidden" id="root_comment_id" name="root_comment_id">
-        {# 顶级评论end #}
-        {# 上一级评论的user的主键 #}
-        <input type="hidden" id="reply_user_id" name="reply_user_id">
-        {# 上一级评论的主键end #}
-    {# 第三方end #}
       {% for comment in all_comment %}
           <div class="blogs " data-scroll-reveal="enter bottom over 1s" >
           <div class="media">
@@ -171,27 +165,37 @@
               <span class="author"><a href="/">&nbsp;{{ comment.user }}</a></span>
           </div>
         {# 顶级回复框 #}
-           <a style="position: relative;left: 15em;" class="btn btn-primary " data-toggle="collapse" href="#collapseExample_{{ comment.pk }}" aria-expanded="false" aria-controls="collapseExample" onclick="reply({{ comment.pk }},{{ comment.user.id }},{{ comment.pk }});">
-              回复顶级评论
-           </a>
-          <div class="collapse" id="collapseExample_{{ comment.pk }}">
-              <div class="well">
-                    <input class="comment" name="reply_text">{# 顶级回复内容 #}
-              <a class="btn btn-primary reply-submit">回复</a>
-              </div>
-          </div>
+          <a style="position: relative;left: 15em;" id="reply_id" class="btn1"  data-toggle="modal"  data-target="#exampleModal"  onclick="reply({{ comment.pk }},{{ comment.user.id }},{{ comment.pk }});">回复</a>
+
+
+{#           <a style="position: relative;left: 15em;" class="btn btn-primary " data-toggle="collapse" href="#collapseExample_{{ comment.pk }}" aria-expanded="false" aria-controls="collapseExample" onclick="reply({{ comment.pk }},{{ comment.user.id }},{{ comment.pk }});">#}
+{#              回复顶级评论#}
+{#           </a>#}
+{#          <div class="collapse" id="collapseExample_{{ comment.pk }}">#}
+{#              <div class="well">#}
+{#                    <input class="comment" name="reply_text">{# 顶级回复内容 #}
+{#              <a class="btn btn-primary reply-submit">提交</a>#}
+{#              </div>#}
+{#          </div>#}
         {# 顶级回复框end #}
-          <div class="reply_content">
-                <p class="blogtext" style="margin-left: 2em;">{{ comment.comment }}</p>
-          </div>
+       <div class="reply_content">
+           <p class="blogtext" style="margin-left: 2em;">{{ comment.comment }}</p></div>
           <div class="bloginfo" style="border-bottom: 1px solid #ccc;">
                 <ul>
                   <li class="timer">{{ comment.add_time }}</li>
                    {# 评论排行 #}
                   <li class="glyphicon glyphicon-fire">{{ forloop.counter }}</li>
-                </ul>
+
+                        {% ifequal request.user comment.user %}
+                            <li class="glyphicon glyphicon-trash">&nbsp;<span onclick="comment_del({{ comment.id }})" id="del" style="">删除</span></li>
+                        {% endifequal %}
+
+               </ul>
                 <span class="emojione"></span>
+              <div class="clear"></div>
            </div>
+
+
            <div style="margin-left: 2em;margin-top: 1em;">
               {% for reply in comment.root_comment.all %}
                  <div class="media">
@@ -203,19 +207,20 @@
 
                   <li class="timer" style="font-size: 12px;color: #748594;line-height: 1.5;margin-top: 1em;">{{ reply.add_time }}</li>
                   {# 上一级评论回复，点击了onclick才获取值 #}
-                    <a style="position: relative;left: 14em;bottom: 2em;" class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample_{{ reply.pk }}" aria-expanded="false" aria-controls="collapseExample" onclick="reply({{ reply.pk }},{{ reply.user.pk }},{{ comment.pk }})">
-                      回复回复评论
-                    </a>
+                  <a style="position: relative;left: 14em;bottom: 2em;" id="reply_id" class="btn1"  data-toggle="modal"  data-target="#exampleModal"  onclick="reply({{ reply.pk }},{{ reply.user.pk }},{{ comment.pk }})">回复</a>
+{#                    <a style="position: relative;left: 14em;bottom: 2em;" class="btn btn-primary" role="button" data-target="#exampleModal" data-toggle="collapse" href="#collapseExample_{{ reply.pk }}" aria-expanded="false" aria-controls="collapseExample" onclick="reply({{ reply.pk }},{{ reply.user.pk }},{{ comment.pk }})">#}
+{#                      回复#}
+{#                    </a>#}
                   {# 上一级评论回复end #}
                   {# 上一级评论回复输入框 #}
-                        <div class="collapse" id="collapseExample_{{ reply.pk }}">
-                              <div class="well">
-                                <input class="ptn" name="reply_text">
+{#                        <div class="collapse" id="collapseExample_{{ reply.pk }}">#}
+{#                              <div class="well">#}
+{#                                <input class="ptn" name="reply_text">#}
 {#                                                value="回复{{ replays.user.username }}" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '回复{{ replays.user.username }}';}"#}
-                        </input>
-                                <a class="btn btn-primary reply-submit">回复</a>{# .reply-submit：让顶级回复和回复回复的按钮都可以点，如果是 .reply-submit则只能点击一个 #}
-                              </div>
-                        </div>
+{#                        </input>#}
+{#                                <a class="btn btn-primary reply-submit">提交</a>{# .reply-submit：让顶级回复和回复回复的按钮都可以点，如果是 .reply-submit则只能点击一个 #}
+{#                              </div>#}
+{#                        </div>#}
                 {# 上一级评论回复输入框end #}
                {% endfor %}
             </div>
@@ -225,24 +230,11 @@
     </div>
    {# 评论列表end #}
   </div>
-  <script type="text/javascript">
-              $(".comment_content  p").each(function(){
-                    var value = $(this).text();
-                    var code = $('<div/>').text(value).html(); //html转义
-                    $(this).html(emojione.toImage(code));
-            });
-   </script>
   </main>
   <aside class="r_box" >
       <div class="wdxc">
         <h2>图文精选</h2>
         <ul>
-          <li><a href="/"><img src="../../../static/images/7.jpg"></a></li>
-          <li><a href="/"><img src="../../../static/images/8.jpg"></a></li>
-          <li><a href="/"><img src="../../../static/images/9.jpg"></a></li>
-          <li><a href="/"><img src="../../../static/images/10.jpg"></a></li>
-          <li><a href="/"><img src="../../../static/images/11.jpg"></a></li>
-          <li><a href="/"><img src="../../../static/images/12.jpg"></a></li>
         </ul>
       </div>
        <div class="fenlei">
@@ -279,10 +271,55 @@
     <a href="#" class="cd-top">Top</a>
 {% endblock %}
 
+
 {% block custom_js %}
     <script type="text/javascript">
+    //评论功能
+    $("#id_comment").emojioneArea();//显示表情框
 
-     //点击回复按钮，reply_comment()
+    $('#js-pl-submit').on('click', function(){
+        //获取输入的值，如果为空：评论不能为空；否则提交ajax
+        var comments = $("#id_comment").val();
+
+        if(comments.length == 0){
+            alert("评论不能为空");
+            return
+        }
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url:"{% url 'article:add_comment' %}",
+            //把数据传给后端（"comments"：内容,course_id：课程的id，为了得到哪个app(对象)评论）
+            data:$('#comment_form').serialize(),
+            //异步成功
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");//csrf_token：不用form表单
+            },
+            success: function(data) {
+                if(data.status == 'fail'){
+                    if(data.msg == '用户未登录'){
+                        window.location.href="{% url 'login' %}";
+                    }else{
+                        alert(data.msg) //输出其他错误
+                    }
+
+                }else if(data['status'] == 'success'){
+                    window.location.reload();//成功，刷新当前页面.自动去掉刚刚评论的内容
+                }
+            },
+        });
+    });
+
+    //对表情进行转义
+    $(".comment_content  p").each(function(){
+                    var value = $(this).text();
+                    var code = $('<div/>').text(value).html();  //html转义
+                    $(this).html(emojione.toImage(code));
+            });
+
+
+    //点击回复按钮，reply_comment()
     $(function () {
         $('.reply-submit').click(function () {
            reply_comment();
@@ -294,8 +331,8 @@
         var root_comment_id = $("#root_comment_id").val();//顶级评论id
         var reply_comment_id = $("#reply_comment_id").val();//上一级评论id
         var reply_user_id = $("#reply_user_id").val();//上一级评论的user的id
-        var comment = $('.comment').val();//回复顶级评论的内容
-        var ptn = $('.ptn').val();//回复 回复评论的内容
+        var comment_text = $('#comment_text').val();//回复顶级评论的内容
+        {#var ptn = $('.ptn').val();//回复 回复评论的内容#}
         $.ajax({
             cache: false,
             type: 'POST',
@@ -304,8 +341,7 @@
                 'root_comment_id': root_comment_id,
                 'reply_comment_id': reply_comment_id,
                 'reply_user_id': reply_user_id,
-                'comment': comment,
-                'ptn': ptn,
+                'comment_text': comment_text,
                 'blog_pk' : {{ blog_detail.pk }}
             },
             ansyc:true,
@@ -418,6 +454,41 @@
             },
         });
     }
+
+
+    //删除评论
+    function comment_del(del_pk) {
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url:"{% url 'article:comment_del' %}",
+            data:{'del_pk':del_pk},//数据传给后端
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function(data) {
+                // confirm：ajax内置函数，当用户点击确定，则执行花括号里面的
+                if(confirm('确认删除吗？')){
+                    if(data.status == 'success'){
+                    console.log(data);
+                    //设置点赞效果
+                    window.location.reload(); //刷新页面
+                    }
+                    else if(data.status == 'fail'){
+                        if(data['msg'] == '用户未登录'){
+                            alert('您没有登陆，正在进行登陆...');
+                            window.location.href="{% url 'login' %}";
+                        }else{
+                            alert(data.msg);
+                        }
+                    }
+
+
+                }
+
+            },
+        });
+    }
     </script>
 {% endblock %}
-

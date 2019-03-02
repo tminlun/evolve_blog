@@ -1,0 +1,214 @@
+{# 图片集锦 #}
+{% extends 'base.html' %}
+{% load staticfiles %}
+<title>{% block title_extends %}照片{% endblock %}</title>
+{% block head_extends %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'css/share.css' %}" rel="stylesheet">
+    <link href="{% static 'css/m.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery.min.js' %}" ></script>
+    <script src="{% static 'js/share.js' %}"></script>
+
+
+
+    <!--[if lt IE 9]>
+    <script src="js/modernizr.js"></script>
+    <![endif]-->
+{% endblock %}
+{% block context %}
+    <article style="margin-top: 5em;">
+  <div class="topbox">
+    <ul>
+      <li><i><a><span class="tnum">1</span><span class="tpic"><img src="{% static 'blog/images/we.jpg' %}"></span><span class="toptext">木像</span></a></i></li>
+      <li><i><a><span class="tnum">2</span><span class="tpic"><img src="{% static 'blog/images/we1.jpg' %}"></span><span class="toptext">泰小馆</span></a></i></li>
+      <li><i><a><span class="tnum">3</span><span class="tpic"><img src="{% static 'blog/images/we2.jpg' %}"></span><span class="toptext">初恋</span></a></i></li>
+      <li><i><a><span class="tnum">4</span><span class="tpic"><img src="{% static 'blog/images/we3.jpg' %}"></span><span class="toptext">music</span></a></i></li>
+    </ul>
+  </div>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+        上传图片
+    </button>
+    {# 获取图片 #}
+        <div class="collapse in" id="collapseExample" aria-expanded="true" style="">
+            <div class="well">
+              <form id="img_form" method="POST" enctype="multipart/form-data" action="{% url 'article:photo' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>图片类型</label>
+                    <select id="photo_type" name="photo_type">
+                            <option value="大学">大学</option>
+                            <option value="广州">广州</option>
+                            <option value="花都">花都</option>
+                            <option value="佛山">佛山</option>
+                            <option value="珠海">珠海</option>
+                            <option value="深圳">深圳</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="text">内容</label>
+                    <input name="describe" type="text" class="form-control" id="text" placeholder="12个字描述">
+                </div>
+
+                  <div class="form-group">
+                        <label for="id_img">上传图片</label>
+                        <input type="file" id="photo" required name="photo">
+                        <p class="help-block">输入完成请点击按钮</p>
+                  </div>
+
+                  <input type="submit" class="btn btn-danger" id="photo_button" onclick="button_hint()" value="上传"></input>
+                  <span class="pull-left text-danger">{{ msg }}</span>
+                  {% if not request.user.is_authenticated %}
+                      {% if request.user.username != 'root' %}
+                          <script type="text/javascript">
+                                function button_hint() {
+                                    alert('您无权添加图片,此页面是我的二人世界!');
+                                }
+                          </script>
+                      {% endif %}
+                  {% endif %}
+                </form>
+        </div>
+    </div>
+    {# 获取图片end #}
+    <script type="text/javascript">
+        $('#photo_button').on('click', function(){
+            said_photo();
+         });
+
+        function said_photo(){
+            //获取值
+            var type = $('#photo_type').val();
+            var text = $('#text').val();
+            var photo = $('#photo').val();
+
+            $.ajax({
+            cache: false,
+            type: "POST",
+            url:"{% url 'article:add_photo' %}",
+            data:{
+                'photo':photo,
+                 'type': type,
+                 'text':text,
+            },//数据传给后端
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function(data) {
+                if(data.status == 'fail'){
+                    if(data['msg'] == '用户未登录'){
+                        alert('您没有登陆，正在进行登陆...');
+                        window.location.href="{% url 'login' %}";
+                    }else{
+                        alert(data.msg);
+                    }
+                }else if(data.status == 'success'){
+                    window.location.reload(); //刷新页面
+
+                }
+            },
+        });
+        }
+    </script>
+
+  <div class="fenlei">
+    <ul>
+{#        <li class="flselect"><a href="#top1">大学</a> </li>#}
+        <li {% ifequal top '大学' %}class="flselect"{% endifequal %}><a href="?top=大学">大学</a> </li>
+        <li {% ifequal top '广州' %}class="flselect"{% endifequal %}><a href="?top=广州">广州</a> </li>
+        <li {% ifequal top '花都' %}class="flselect"{% endifequal %}><a href="?top=花都">花都</a> </li>
+        <li {% ifequal top '佛山' %}class="flselect"{% endifequal %}><a href="?top=佛山">佛山</a> </li>
+        <li {% ifequal top '珠海' %}class="flselect"{% endifequal %}><a href="?top=珠海">珠海</a> </li>
+        <li {% ifequal top '深圳' %}class="flselect"{% endifequal %}><a href="?top=深圳">深圳</a> </li>
+    </ul>
+  </div>
+  <div class="mbans">
+
+    <div class="mban"  style="display: block;" name="top1">
+      <ul>
+          {% for photo in all_photo %}
+                <li><i><a><span class="tnum">原创</span><img src="{{ MEDIA_URL }}{{ photo.photo }}"> <span class="mbtitle"></span> {{ photo.describe }}</a></i></li>
+          {% empty %}
+            <p>--暂无图片--</p>
+          {% endfor %}
+      </ul>
+    </div>
+{##}
+{#    <div class="mban" name="top2">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/College.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb4.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb2.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb3.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb5.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#      </ul>#}
+{#    </div>#}
+{#      广州#}
+{#    <div class="mban" name="top3">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz1.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz2.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz3.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz4.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz5.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#          <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz6.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#          <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz7.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#          <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz8.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#      <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz9.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#          <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/gz10.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#    </ul>#}
+{#    </div>#}
+{#      花都#}
+{#    <div class="mban" name="top4">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/hd.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb1.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb2.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb4.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb5.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#      </ul>#}
+{#    </div>#}
+{#      佛山#}
+{#    <div class="mban" name="top5">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/fs.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb1.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb4.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb3.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static '' %}static/images/mb5.jpg"> <span class="mbtitle">个人博客模板《simple》</span> </a></i></li>#}
+{##}
+{#          </ul>#}
+{#    </div>#}
+{#       珠海#}
+{#    <div class="mban" name="top6">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/zh2.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/zh.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/zh1.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/zh3.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/1.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#      </ul>#}
+{#    </div>#}
+{#      <div class="mban" name="top7">#}
+{#      <ul>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz1.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz2.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz3.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#        <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz5.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#          <li><i><a><span class="tnum">原创</span><img src="{% static 'blog/images/sz4.jpg' %}"> <span class="mbtitle"></span> </a></i></li>#}
+{#      </ul>#}
+{#    </div>#}
+  </div>
+</article>
+{% endblock %}

@@ -1,9 +1,10 @@
 {% load staticfiles %}
-
-
-{% block head_extends %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
+    <title>{% block login_title %}登录{% endblock %}</title>
+     <meta charset="UTF-8">
     <meta name="keywords" content="" />
 	<meta name="description" content="" />
 
@@ -13,8 +14,12 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
-{% endblock %}
+     <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/love.js' %}"></script>
 
+</head>
+<body>
 {% block content %}
 
     <div class="limiter">
@@ -88,44 +93,6 @@
 		</div>
 	</div>
 {% endblock %}
+</body>
+</html>
 
-{% block script_extends %}
-    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-	<script src="{% static 'js/main.js' %}"></script>
-    {# 登录|注册 #}
-    <script type="text/javascript">
-    //登录
-    {#function login_user() {#}
-    {#    var user_login = $("#user_login").val();#}
-    {#    var pwd_login = $("#pwd_login").val();#}
-    {##}
-    {#    if(user_login=="" || pwd_login == ""){#}
-    {#        alert("用户名或密码不能为空");#}
-    {#    }else{#}
-    {#        $.ajax({#}
-    {#        cache:false,#}
-    {#        type:'POST',#}
-    {#        url:"{% url 'login' %}",#}
-    {#        data: {#}
-    {#            "username":user_login,#}
-    {#            "password":pwd_login,#}
-    {#        },#}
-    {#        ansyc:true,#}
-    {#           beforeSend:function (xhr,settings) {#}
-    {#               xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");#}
-    {#           },#}
-    {#        success:function (data) {#}
-    {#                if(data['status'] == 'success'){#}
-                        {#window.location.reload();//刷新当前页面.#}
-    {#                    window.location.href ="{{ click_url }}/";#}
-    {#                    alert(data.msg)#}
-    {#                }else if(data['status'] == 'fail'){#}
-    {#                    $('#login_error').text(data.msg);#}
-    {#                }#}
-    {#            }#}
-    {#    });#}
-    {#    }#}
-    {#}#}
-
-    </script>
-{% endblock %}

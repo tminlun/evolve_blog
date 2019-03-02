@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',#用户扩展
     'article.apps.ArticleConfig',#博客
     'operation.apps.OperationConfig', #用户操作
+    'DjangoUeditor',
 ]
 
 #扩展User
@@ -91,10 +92,11 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "blog",
+        'NAME': "test_blog",
         'USER': "root",
         'PASSWORD': "root",
         'HOST': "127.0.0.1",
+        'OPTIONS': {'charset': 'utf8mb4'}  # 添加此行代码
     }
 }
 

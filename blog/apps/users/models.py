@@ -43,9 +43,9 @@ class EmailVerifyRecord(models.Model):
 
 #轮播图
 class Banner(models.Model):
-    title = models.CharField('标题', max_length=100)
+    title = models.CharField('标题', max_length=100,null=True,blank=True)
     image = models.ImageField('轮播图', upload_to="banner/%Y%m",max_length=100,default='banner/default.png')
-    url = models.URLField('访问地址',max_length=200)#url是图片的路径
+    url = models.URLField('访问地址',max_length=200,null=True,blank=True)#url是图片的路径
     index = models.IntegerField('顺序',default=100)# index控制轮播图的播放顺序
     add_time = models.DateTimeField('添加时间', default=datetime.now)
 
