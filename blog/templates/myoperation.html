@@ -24,6 +24,7 @@
 {% block context %}
     <article style="position: relative; top: 5em;">
         <main>
+        {{ msg }}
             {% for user_fav in user_favs.object_list %}
                 <div class="blogs" data-scroll-reveal="enter bottom over 1s" >
                       <h3 class="blogtitle"><a href="{% url 'article:article-detail' user_fav.fav_blog.id %}">{{ user_fav.fav_blog.name }}</a></h3>

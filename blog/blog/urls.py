@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path,include,re_path
 from django.views.generic import TemplateView
 from users.views import HomeView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView,ResetView,ModifyPwdView, MyOperationView
+from users.views import ProfileView,AjaxAvatarUploadView,MarkProgCount
 from article.views import TimerShaftView
 from django.conf import settings #上传图片
 from django.conf.urls.static import static #上传图片
@@ -37,6 +38,12 @@ urlpatterns = [
     path('article/',include('article.urls',namespace='article')), #文章
     path('timer_shaft/',TimerShaftView.as_view(), name="timer_shaft"), #时间轴
     path('ueditor/', include('DjangoUeditor.urls')), #富文本
-    path('myoperation/', MyOperationView.as_view(), name="myoperation"), #富文本
+    path('myoperation/', MyOperationView.as_view(), name="myoperation"), #收藏列表
+    # 展示头像
+    path('profile/',ProfileView.as_view(), name='profile'),
+    # 处理头像
+    path('profile/ajax/avatar/',AjaxAvatarUploadView.as_view(), name='ajax_avatar_upload'),
+    # 进度条
+    path('filecount/',MarkProgCount.as_view(), name='filecount'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

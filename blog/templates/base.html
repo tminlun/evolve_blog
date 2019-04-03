@@ -20,6 +20,7 @@
   <nav>
     <div class="logo"><a href="{% url 'home' %}">田敏伦个人博客</a></div>
     <h2 id="mnavh"><span class="navicon"></span></h2>
+
     <ul id="starlist">
       <li id="{% if request.path == '/' %}selected{% endif %}"><a href="{% url 'home' %}">网站首页</a></li>
         <li id="{% if request.path|slice:'9' == '/article/' %}selected{% endif %}"><a href="{% url 'article:article-list' %}">文章</a></li>
@@ -44,9 +45,9 @@
 {#        <form  id="searchform" action="[!--news.url--]e/search/index.php" method="post" name="searchform">#}
           <input class="input" placeholder="想搜点什么呢.." type="text" name="keyboard" id="search_keywords">
           <p class="search_ico" id="jsSearchBtn"> <span></span></p>
-
       </div>
     </div>
+      <div style="text-shadow: #fff 1px 0 2px, #fff 0 1px 2px, #fff -1px 0 2px, #fff 0 -1px 2px;font-size: 12px;">欢迎你：{{ request.user.username }}</div>
       <script type="text/javascript">
         //顶部搜索栏搜索方法
             $('#jsSearchBtn').on('click',function(){

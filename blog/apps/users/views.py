@@ -1,3 +1,7 @@
+import os
+import json
+import uuid
+from PIL import Image
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger #分页
 from django.shortcuts import render,redirect,reverse
 from django.views.generic import View
@@ -7,8 +11,8 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.hashers import make_password
 from .models import UserProfile
-from .forms import LoginForm,RegisterForm,ForgetPwdForm,ModifyPwdForm
-from .models import EmailVerifyRecord, Banner
+from .forms import LoginForm,RegisterForm,ForgetPwdForm,ModifyPwdForm,AvatarUploadForm
+from .models import EmailVerifyRecord
 from utils.email_send import send_register_email
 from utils.mixin_utils import LoginRequiredMixin
 from operation.models import UserFavorite, FavoriteCount
@@ -225,15 +229,15 @@ class ResetView(View):
 class HomeView(View):
     """首页"""
     def get(self,request):
-        return render(request, 'home.html',{
-
-        })
+        return render(request, 'home.html',{})
 
 
-class MyOperationView(View):
+class MyOperationView(LoginRequiredMixin, View):
+    """
+    收藏列表
+    """
     def get(self, request):
         user_favs = UserFavorite.objects.filter(user=request.user)
-
         # 分页功能
         try:
             page = request.GET.get('page', 1)  # 获取n（page=n）,默认显示第一页
@@ -244,3 +248,118 @@ class MyOperationView(View):
         return render(request, 'myoperation.html',{
             'user_favs': favs,
         })
+
+
+# 图片上传
+class ProfileView(LoginRequiredMixin, View):
+    """  展示修改头像页面 """
+    def get(self,request):
+        user = request.user
+        previous_url = request.GET.get('from')
+        if user.is_authenticated:
+            # 登录才可以访问此网页
+            return render(request, 'profile.html', {'user': user,'previous_url':previous_url})
+        # 没登录不做操作
+
+
+class AjaxAvatarUploadView(LoginRequiredMixin, View):
+    """
+    保存
+    """
+    def post(self, request):
+        user = request.user
+        form = AvatarUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            img = request.FILES['avatar_file'] # 获取上传图片
+            data = request.POST['avatar_data'] # 获取ajax返回图片坐标
+
+            if img.size/1024 > 700:
+                return JsonResponse({"message": "图片尺寸应小于900 X 1200 像素, 请重新上传。", })
+
+            current_avatar = user.image  # 旧照片路径
+            cropped_avatar = crop_image(current_avatar, img, data, user.id)  # 先新照片其压缩或裁剪，返回图片路径
+
+            # 存储图片路径
+            user.image = cropped_avatar
+            user.save()
+
+            # 向前台返回一个json，result值是图片路径
+            data = {"result": user.image.url, "code": 200}
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"msg": "请重新上传。只能上传图片"})
+
+
+def crop_image(current_avatar, file, data, uid):
+    """
+    处理头像
+        :param current_avatar: 旧的照片
+        :param file: 新图片
+        :param data: 获取ajax返回图片坐标
+        :param uid: 用户id
+        :return:
+    """
+    # 新头像的后缀名（png）
+    ext = file.name.split('.')[-1]
+
+    #  uuid.uuid4()：随机数，hex[:10]：前10位数字转换为16进制
+    #  {}.{}：{随机数字（新头像）}.{jpg}
+    file_name = '{}.{}'.format(uuid.uuid4().hex[:10], ext)
+    # 相对头像路径：（用户id / avatar / 头像名）,上传的头像会上传到这个路径
+    cropped_avatar = os.path.join(str(uid), "avatar", file_name)
+    # 绝对头像路径（media / id / 头像名）
+    file_path = os.path.join("media", str(uid), "avatar", file_name)
+
+    # 获取Ajax发送的裁剪参数data，先用json解析。
+    #  {'x': 27.17776617378701, 'y': 2.26191634211227, 'height': 164.89762434053827, 'width': 164.89762434053827, 'rotate': 0}
+    coords = json.loads(data)
+    t_x = int(coords['x']) # 获取x值
+    t_y = int(coords['y'])
+    t_width = t_x + int(coords['width'])  # x + width
+    t_height = t_y + int(coords['height'])
+    t_rotate = coords['rotate']
+
+    # 裁剪图片,压缩尺寸为400*400。
+    img = Image.open(file)
+    crop_im = img.crop((t_x, t_y, t_width, t_height)).resize((400, 400), Image.ANTIALIAS).rotate(t_rotate)
+
+    # 保存图片
+    '''
+    dirname：（media / id / 头像名）
+    功能：上一级目录
+    如：
+         print(os.path.dirname(media / id / 头像文件名))
+         media / id
+    '''
+    # 保存到目录
+    directory = os.path.dirname(file_path)  # 上一级目录
+    # 判断括号里的目录，是否存在上一级目录
+    if os.path.exists(directory):
+        # 有，裁剪图片进行保存
+        crop_im.save(file_path)
+    else:
+        # 如果没有目录（media / id / 头像名）
+        os.makedirs(directory)  # 创建directory目录
+        # 裁剪图片保存到，头像目录
+        crop_im.save(file_path)
+
+    # 上传新图片后，删除旧的图片
+    # 判断是否使用默认头像，否则进行删除操作
+    if not current_avatar == os.path.join("avatar", "default.jpg"):
+        # 上传新图片，不使用默认头像
+        current_avatar_path = os.path.join("media", str(uid), "avatar", os.path.basename(current_avatar.url))  # 老图片
+        # 删除老照片
+        os.remove(current_avatar_path)
+
+    return cropped_avatar
+
+
+#进度条
+class MarkProgCount(View):
+    def post(self,request):
+        data = {}
+        for i in range(101):
+            cont_prog = int(i * 100 / 100)
+            data['cont_prog'] = cont_prog
+        # safe=False：传递如何值
+        return JsonResponse(data, safe=False)

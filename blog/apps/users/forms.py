@@ -2,6 +2,7 @@
 __author__: '田敏伦'
 __date__: '2019/1/12 0012 19:52'
 
+
 from django import forms
 from captcha.fields import CaptchaField
 from .models import UserProfile
@@ -29,4 +30,15 @@ class ForgetPwdForm(forms.Form):
 class ModifyPwdForm(forms.Form):
     password1 = forms.CharField(required=True, min_length=5)
     password2 = forms.CharField(required=True, min_length=5)
+
+
+class ProfileForm(forms.Form):
+    '''用户验证'''
+    first_name = forms.CharField(label='First Name', max_length=50, required=False)
+    last_name = forms.CharField(label='Last Name', max_length=50, required=False)
+
+
+class AvatarUploadForm(forms.Form):
+    """上传头像"""
+    avatar_file = forms.ImageField()
 
