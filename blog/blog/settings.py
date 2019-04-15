@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'article.apps.ArticleConfig',#博客
     'operation.apps.OperationConfig', #用户操作
     'DjangoUeditor',
+    'social_django',
 ]
 
 #扩展User
@@ -77,6 +78,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',#上传media图片使得模板显示图片
+                # 第三方登录
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -97,7 +101,8 @@ DATABASES = {
         'USER': "root",
         'PASSWORD': "root",
         'HOST': "127.0.0.1",
-        'OPTIONS': {'charset': 'utf8mb4'}  # 添加此行代码
+        # 表情（charset）、第三方（init_command）储存方式
+        'OPTIONS': {'charset': 'utf8mb4', "init_command":"SET default_storage_engine=INNODB;"},
     }
 }
 
@@ -151,6 +156,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')#文件上传到根目录media中
 #重写authentication#记得加逗号，不然会出现奇怪的bug
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',#记得加逗号
+    # 第三方登录
+    'django.contrib.auth.backends.ModelBackend',
+    # 微博
+    'social_core.backends.weibo.WeiboOAuth2',
+    # QQ
+    'social_core.backends.qq.QQOAuth2',
+    # 微信
+    'social_core.backends.weixin.WeixinOAuth2',
 )
 
 #发送邮箱
@@ -160,3 +173,24 @@ EMAIL_HOST_USER = "1272443075@qq.com"       # 邮箱地址
 EMAIL_HOST_PASSWORD = "irfdbbeesjgeiaac"    # 密码
 EMAIL_USE_TLS = True
 EMAIL_FROM = "1272443075@qq.com"            # 邮箱地址要和EMAIL_HOST_USER保持一致
+
+# 第三方登录，里面的值是你的开放平台对应的值
+SOCIAL_AUTH_WEIBO_KEY = '2392794455'
+SOCIAL_AUTH_WEIBO_SECRET = '0463730f8aad338fabd367069687b9f4'
+
+SOCIAL_AUTH_QQ_KEY = 'xxxxxxx'
+SOCIAL_AUTH_QQ_SECRET = 'xxxxxxx'
+
+SOCIAL_AUTH_WEIXIN_KEY = 'xxxxxxx'
+SOCIAL_AUTH_WEIXIN_SECRET = 'xxxxxxx'
+
+#第三方登录成功后跳转到首页
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+
+# mysql数据库 缓存设置
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',  # 数据库中的缓存表名
+    }
+}

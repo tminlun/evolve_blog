@@ -2,9 +2,11 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger #分页
 from django.shortcuts import render,get_object_or_404
 from django.views import View
 from django.db.models import Q
+from django.core.cache import cache
 from operation.models import CourseComments, UserFavorite, FavoriteCount,UserLike,LikeCount
 from .models import Blog, BlogType
 from users.models import Banner
+
 # Create your views here.
 
 
@@ -47,6 +49,15 @@ class AticleListView(View):
         #轮播图
         all_banner = Banner.objects.all().order_by("index")  # 轮播图
 
+        # 缓存
+        cache_blogs = cache.get('cache_blogs')  # 获取缓存表中的key
+        if cache_blogs is None:
+            # 如果没有此key
+            cache_value = Blog.objects.all()  # 所有博客作为value
+            cache.set('cache_blogs', cache_value, 3600)  # 写进缓存 key, value, time（单位：秒）
+        else:
+            print('user cache')
+
         return render(request, 'article-list.html', {
             'all_blog': blogs,
             'all_blog_type': all_blog_type,
@@ -81,16 +92,21 @@ class AticleDetailView(View):
 
         #收藏
         try:
+            # 收藏数
             fav_num = FavoriteCount.objects.get(fav_blog=blog_detail).fav_nums
         except Exception:
             fav_num = 0
 
         if user.is_authenticated:
+            # 登录
             if UserFavorite.objects.filter(fav_blog=blog_detail, user=user):
+                # 已收藏
                 active_fav = 'true_fav'
             else:
+                # 未收藏
                 active_fav = ''
         else:
+            # 未登录
             active_fav = ''
 
         #点赞

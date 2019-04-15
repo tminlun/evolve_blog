@@ -16,6 +16,7 @@ Including another URLconf
 import xadmin
 from django.contrib import admin
 from django.urls import path,include,re_path
+from django.conf.urls import url
 from django.views.generic import TemplateView
 from users.views import HomeView, LoginView, LogoutView, RegisterView, ActiveUserView, ForgetPwdView,ResetView,ModifyPwdView, MyOperationView
 from users.views import ProfileView,AjaxAvatarUploadView,MarkProgCount
@@ -27,7 +28,10 @@ from django.conf.urls.static import static #上传图片
 urlpatterns = [
     path('xadmin/', xadmin.site.urls,name="xadmin"),
     path('',HomeView.as_view(),name="home"), #首页
-    path('login/',LoginView.as_view(),name="login"), #登录
+    # 登录
+    # $：避免同名url
+    # path('login/',LoginView.as_view(),name="login"),
+    url(r'^login/$', LoginView.as_view(),name="login"),
     path('signup/',RegisterView.as_view(),name="signup"), #注册
     path('logout/',LogoutView.as_view(),name="logout"), #注销
     path('captcha/',include('captcha.urls')), #验证码
@@ -45,5 +49,7 @@ urlpatterns = [
     path('profile/ajax/avatar/',AjaxAvatarUploadView.as_view(), name='ajax_avatar_upload'),
     # 进度条
     path('filecount/',MarkProgCount.as_view(), name='filecount'),
+    # 第三方登录
+    path('', include('social_django.urls', namespace='social'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

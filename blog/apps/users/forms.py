@@ -41,4 +41,3 @@ class ProfileForm(forms.Form):
 class AvatarUploadForm(forms.Form):
     """上传头像"""
     avatar_file = forms.ImageField()
-

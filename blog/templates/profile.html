@@ -21,7 +21,7 @@
 <div class="ibox-content">
 	<div class="row">
 		<div id="crop-avatar" class="col-md-6">
-			<div class="avatar-view" title="Change Logo Picture">
+			<div class="avatar-view" title="修改头像">
 				<img src="{{ MEDIA_URL }}{{ request.user.image }}" alt="Logo">
 
 			</div>
@@ -46,7 +46,7 @@
                 {% csrf_token %}
                 <div class="modal-header">
 					<button class="close" data-dismiss="modal" type="button">&times;</button>
-					<h4 class="modal-title" id="avatar-modal-label">Change Logo Picture</h4>
+					<h4 class="modal-title" id="avatar-modal-label">修改头像</h4>
 				</div>
 				<div class="modal-body">
 					<div class="avatar-body">
@@ -131,7 +131,7 @@
 
                             // 上传完成
                             var prog_in_width = $('#prog_in').width();
-                            if( prog_in_width == 100){
+                            if( prog_in_width === 100){
                                  clearInterval(sitv);
                                  window.alert('完成上传');
                                 $("#msg").text("完成上传");
@@ -141,7 +141,7 @@
 
                         }
                     });
-                },38);
+                },10);
              }
              }
 </script>

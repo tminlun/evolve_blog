@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 
-#用函数方式写的话直接加个装饰器（@login_required）就可以，但是我们是用类的方式写的，必须用继承的方式super
+# 用函数方式写的话直接加个装饰器（@login_required）就可以，但是我们是用类的方式写的，必须用继承的方式super
 class LoginRequiredMixin(object):
     """
     在django中已Mixin结尾的，就代表最基本的View
@@ -15,3 +15,4 @@ class LoginRequiredMixin(object):
     # 固定写法
     def dispatch(self,request,*args,**kwargs):
         return super(LoginRequiredMixin, self).dispatch(request,*args,**kwargs)
+

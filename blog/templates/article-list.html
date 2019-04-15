@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 <title>
-    {% block title_extends %}{% endblock %}
+    {% block title_extends %}博客列表{% endblock %}
 </title>
 
 {% block head_extends %}
@@ -116,7 +116,7 @@
           <li class="timer"></li>
           <li class="view"><span>{{ blog.click_nums }}</span>已阅读</li>
           <li class="like">{{ blog.like_nums }}</li>
-          <li>收藏：{{ blog.fav_nums }}</li>
+
         </ul>
         </div>
         </div>

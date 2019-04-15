@@ -35,14 +35,14 @@ class UserProfile(AbstractUser):
     gander = models.CharField(max_length=10,default='man',choices=(('man','男'),('woman','女')),verbose_name="性别")
     address = models.CharField(max_length=100,default='',null=True,blank=True,verbose_name="住址")
     mobile = models.CharField(max_length=11,default='',null=True,blank=True,verbose_name="手机号码")
-    image = models.ImageField(upload_to=user_directory_path,default=os.path.join("avatar", "default.jpg"),null=True,blank=True,max_length=100,verbose_name='头像')
+    image = models.ImageField(upload_to=user_directory_path,default=os.path.join("avatar", "default.png"),null=True,blank=True,verbose_name='头像')
 
     class Meta:
         verbose_name = '用户扩展'
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return '{0}'.format(self.username) #AbstractUser自带username
+        return '{}'.format(self.username) #AbstractUser自带username
 
 
 #邮箱验证码

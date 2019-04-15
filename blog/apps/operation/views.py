@@ -66,6 +66,8 @@ class ReplyCommentView(View):
         reply_user_id = int(request.POST.get('reply_user_id', 0))#上一级回复user的id
         blog_pk = int(request.POST.get('blog_pk', 0))  # 课程id
         comment_text = request.POST.get('comment_text', '')  # 回复顶级评论的内容
+        if comment_text == '':
+            return Fail('回复内容不能为空')
         # ptn_text = request.POST.get('ptn', '')  # 回复回复评论的内容
 
         try:

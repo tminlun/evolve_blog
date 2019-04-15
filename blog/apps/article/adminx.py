@@ -25,12 +25,15 @@ class BlogTypeAdmin(object):
 
 
 class BlogAdmin(object):
+    '''
+    搜索和过滤不要加 details
+    '''
     # 显示的列
-    list_display = ('name', 'blog_type','describe','detail','image','author','related','click_nums','add_time')
+    list_display = ('name', 'blog_type','details','describe','image','author','related','click_nums','add_time')
     # 搜索的字段，不要添加时间搜索
-    search_fields = ['name', 'blog_type','describe','detail','image','author','related']
+    search_fields = ['name', 'blog_type','describe','image','author','related']
     # 过滤
-    list_filter = ['name', 'blog_type','describe','detail','image','author','related','click_nums','add_time']
+    list_filter = ['name', 'blog_type','describe','image','author','related','click_nums','add_time']
 
     #自接在后台列表页进行编辑
     list_editable = ['name', 'blog_type']

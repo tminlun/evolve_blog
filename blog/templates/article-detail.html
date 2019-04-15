@@ -161,7 +161,11 @@
       {% for comment in all_comment %}
           <div class="blogs " data-scroll-reveal="enter bottom over 1s" >
           <div class="media">
-              <a href="{% url 'profile' %}?from={{ request.get_full_path }}"><span target="_blank"><img style="display: inline;" src='{{ MEDIA_URL }}{{ comment.user.image }}' width='40' height='40' /></span></a>
+              {% ifequal request.user comment.user %}
+                <a href="{% url 'profile' %}?from={{ request.get_full_path }}"><span target="_blank"><img style="display: inline;" src='{{ MEDIA_URL }}{{ comment.user.image }}' width='40' height='40' /></span></a>
+              {% else %}
+                  <span target="_blank"><img style="display: inline;" src='{{ MEDIA_URL }}{{ comment.user.image }}' width='40' height='40' /></span>
+              {% endifequal %}
               <span class="author"><a href="/">&nbsp;{{ comment.user }}</a></span>
           </div>
         {# 顶级回复框 #}

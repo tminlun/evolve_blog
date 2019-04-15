@@ -264,21 +264,21 @@ class ProfileView(LoginRequiredMixin, View):
 
 class AjaxAvatarUploadView(LoginRequiredMixin, View):
     """
-    保存
+    头像相对路径保存到user.image
     """
     def post(self, request):
         user = request.user
         form = AvatarUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            img = request.FILES['avatar_file'] # 获取上传图片
-            data = request.POST['avatar_data'] # 获取ajax返回图片坐标
+            img = request.FILES['avatar_file']  # 获取上传图片
+            data = request.POST['avatar_data']  # 获取ajax返回图片坐标
 
             if img.size/1024 > 700:
                 return JsonResponse({"message": "图片尺寸应小于900 X 1200 像素, 请重新上传。", })
 
             current_avatar = user.image  # 旧照片路径
-            cropped_avatar = crop_image(current_avatar, img, data, user.id)  # 先新照片其压缩或裁剪，返回图片路径
-
+            # 压缩或裁剪新头像，保存到media路径
+            cropped_avatar = crop_image(current_avatar, img, data, user.id)
             # 存储图片路径
             user.image = cropped_avatar
             user.save()
@@ -293,6 +293,7 @@ class AjaxAvatarUploadView(LoginRequiredMixin, View):
 def crop_image(current_avatar, file, data, uid):
     """
     处理头像
+        头像的绝对路径保存到文件夹
         :param current_avatar: 旧的照片
         :param file: 新图片
         :param data: 获取ajax返回图片坐标
@@ -331,7 +332,7 @@ def crop_image(current_avatar, file, data, uid):
          print(os.path.dirname(media / id / 头像文件名))
          media / id
     '''
-    # 保存到目录
+    # 图片保存到media / user_id / avatar目录
     directory = os.path.dirname(file_path)  # 上一级目录
     # 判断括号里的目录，是否存在上一级目录
     if os.path.exists(directory):
@@ -345,7 +346,7 @@ def crop_image(current_avatar, file, data, uid):
 
     # 上传新图片后，删除旧的图片
     # 判断是否使用默认头像，否则进行删除操作
-    if not current_avatar == os.path.join("avatar", "default.jpg"):
+    if not current_avatar == os.path.join("avatar", "default.png"):
         # 上传新图片，不使用默认头像
         current_avatar_path = os.path.join("media", str(uid), "avatar", os.path.basename(current_avatar.url))  # 老图片
         # 删除老照片
@@ -354,11 +355,13 @@ def crop_image(current_avatar, file, data, uid):
     return cropped_avatar
 
 
-#进度条
+# #进度条
 class MarkProgCount(View):
     def post(self,request):
         data = {}
         for i in range(101):
+            if i == 100:
+                break
             cont_prog = int(i * 100 / 100)
             data['cont_prog'] = cont_prog
         # safe=False：传递如何值

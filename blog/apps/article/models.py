@@ -33,6 +33,13 @@ class Blog(models.Model):
     # like_nums = models.IntegerField(default=0,verbose_name='喜欢人数')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
+    def details(self):
+        if len(str(self.detail))>65:
+            return '{}...' .format(str(self.detail)[:65])
+        else:
+            return str(self.detail)
+    details.allow_tags = True
+
     class Meta:
         verbose_name = '博客'
         verbose_name_plural = verbose_name
@@ -40,13 +47,6 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.name
-
-
-    def details(self):
-        if len(str(self.detail)) > 65:
-            return '{}...'.format(str(self.detail))[0:65]
-        else:
-            return self.detail
 
 
 #博客资源
